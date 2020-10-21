@@ -1,0 +1,34 @@
+{
+  "name": "de.jochenheckl.unity.acssandbox",
+  "displayName": "ACS Sandbox",
+  "version": "1.0.0",
+  "unity": "2020.1",
+  "description": "Scaffolding for authoritative client server architecture unity projects.",
+  "type": "template",
+  "keywords": [
+    "SOLID",
+    "authoritative",
+    "client",
+    "server",
+    "networking",
+    "multiplayer",
+    "data binding"
+  ],
+  "author": {
+    "name": "Jochen Heckl",
+    "email": "jochen.heckl@gmail.com",
+    "url": "https://www.jochenheckl.de"
+  },
+  "samples": [
+    {
+      "displayName": "SimpleExample",
+      "description": "Run around a square area by clicking.",
+      "path": "Samples~/SimpleExample"
+    }
+  ],
+  "dependencies": {
+    "com.unity.nuget.newtonsoft-json": "2.0.0",
+    "de.jochenheckl.unity.ioclight": "1.3.3",
+    "de.jochenheckl.unity.databinding": "1.2.3"
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "FPSLimit": 165,
+
+  "AutoConnect" : false,
+  "AutoConnectServerAddress": "localhost",
+  "AutoConnectServerPort": 1337,
+
+  "WellKnownServers":
+  [
+    {
+      "DisplayName": "localhost",
+      "ServerAddress": "localhost",
+      "ServerPort": "1337"
+    },
+    {
+      "DisplayName": "Jochen",
+      "ServerAddress": "I7Dell",
+      "ServerPort": "1337"
+    }
+  ],
+
+  "NetworkConnectionRetryIntervalSec" : 2,
+  "NetworkConnectionTimeoutSec" : 5
+}
