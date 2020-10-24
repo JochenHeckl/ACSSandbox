@@ -28,7 +28,7 @@
   ],
   "dependencies": {
     "com.unity.nuget.newtonsoft-json": "2.0.0",
-    "de.jochenheckl.unity.ioclight": "1.3.3",
+    "de.jochenheckl.unity.ioclight": "1.4.0",
     "de.jochenheckl.unity.databinding": "1.2.3"
   }
 }

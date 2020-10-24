@@ -1,0 +1,16 @@
+{
+    "name": "de.JochenHeckl.Unity.ACSSandbox.Protocol",
+    "rootNamespace": "",
+    "references": [
+        "GUID:e4d3d6442692c2f439ea98ae110d0ad9"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

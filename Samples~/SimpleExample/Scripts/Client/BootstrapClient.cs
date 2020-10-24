@@ -7,10 +7,13 @@ using de.JochenHeckl.Unity.IoCLight;
 using Newtonsoft.Json;
 using System.Linq;
 using de.JochenHeckl.Unity.ACSSandbox.Common;
+using System.ComponentModel.Design.Serialization;
+using System.Collections.Generic;
+using de.JochenHeckl.Unity.ACSSandbox.Example;
 
 namespace de.JochenHeckl.Unity.ACSSandbox.Client
 {
-	public class BootstrapClient : BootstrapBase, IContextContainer
+	public class BootstrapClient : BootstrapBase
 	{
 		private static readonly string configurationFileName = "Configuration.Client.json";
 
@@ -20,49 +23,71 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Client
 		public ClientResources clientResources;
 		public RectTransform userInterfaceRoot;
 
-		private IClientRuntimeData clientRuntimeData;
-		private ClientConfiguration configuration;
+		private IClientRuntimeData runtimeData;
 		private IClientSystem[] clientSystems;
-
-		public IContext ActiveContext { get; set; }
 
 		public override void Compose()
 		{
+			Container.RegisterInstance( Container );
+				
 			Container.RegisterInstance( ParseConfiguration() );
-			Container.RegisterInstance( clientResources ).As<IClientResources>().SingleInstance();
+			Container.RegisterInstance( clientResources ).SingleInstance();
 
-			clientRuntimeData = new ClientRuntimeData()
+			runtimeData = new ClientRuntimeData()
 			{
+				TimeSec = Time.realtimeSinceStartup,
 				UserInterfaceRoot = userInterfaceRoot
 			};
 
-			Container.RegisterInstance( clientRuntimeData ).As<IClientRuntimeData>().SingleInstance();
-
-			Container.Register<NetworkClientUnityTransport>().As<INetworkClient>().SingleInstance();
+			Container.RegisterInstance( runtimeData ).SingleInstance();
 			
-			Container.Register<LoginContext>();
+			Container.RegisterInstance( SetupMessageSerializer() ).SingleInstance();
+
+			Container.Register<NetworkClientUnityTransport>().SingleInstance();
+			Container.Register<NetworkMessageDispatcher>().SingleInstance();
+			
+			Container.Register<ContextSystem>().SingleInstance();
+
+
+			Container.Register<Startup>();
+			Container.Register<Login>();
+			Container.Register<AcquireGlobalServerData>();
+		}
+
+		private IMessageSerializer SetupMessageSerializer()
+		{
+			var serializer = new MessageSerializerBson();
+
+			foreach ( var message in MessageIds.ClientToServerMessageIds )
+			{
+				serializer.RegisterType( message.messageId, message.messageType );
+			}
+
+			foreach ( var message in MessageIds.ServerToClientMessageIds )
+			{
+				serializer.RegisterType( message.messageId, message.messageType );
+			}
+
+			return serializer;
 		}
 
 		public void Start()
 		{
-			configuration = Container.Resolve<ClientConfiguration>();
-
+			var configuration = Container.Resolve<ClientConfiguration>();
 			Application.targetFrameRate = configuration.FPSLimit;
 
+			var contextSystem = Container.Resolve<IContextContainer>();
+			
 			clientSystems = Container.ResolveAll<IClientSystem>();
 
 			foreach ( var system in clientSystems )
 			{
 				system.Initialize();
 			}
-
-			SwitchToContext( Container.Resolve<LoginContext>() );
 		}
 
 		public override void OnDestroy()
 		{
-			SwitchToContext( null );
-
 			foreach ( var system in clientSystems.Reverse() )
 			{
 				system.Shutdown();
@@ -77,8 +102,6 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Client
 			{
 				system.Update( Time.deltaTime );
 			}
-
-			ActiveContext?.Update( Time.deltaTime );
 		}
 
 		private ClientConfiguration ParseConfiguration()
@@ -101,28 +124,6 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Client
 			}
 
 			return JsonConvert.DeserializeObject<ClientConfiguration>( configuration );
-		}
-
-		public void SwitchToContext( IContext newContext )
-		{
-			if( ActiveContext != null )
-			{
-				ActiveContext.LeaveContext( newContext );
-			}
-
-			newContext?.EnterContext( ActiveContext );
-
-			ActiveContext = newContext;
-		}
-
-		public void PushConext( IContext context )
-		{
-			throw new NotImplementedException();
-		}
-
-		public void PopContext()
-		{
-			throw new NotImplementedException();
 		}
 	}
 }

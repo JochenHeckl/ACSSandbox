@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 
+using de.JochenHeckl.Unity.ACSSandbox.Common;
+
 using Unity.Collections;
 using Unity.Jobs;
 using Unity.Networking.Transport;
@@ -25,10 +27,14 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Client
 		private ClientConfiguration configuration;
 		private IClientRuntimeData runtimeData;
 
-		private string serverHostName;
+		private string serverAddress;
 		private int serverPort;
 
-		public NetworkClientUnityTransport( ClientConfiguration configurationIn, IClientRuntimeData runtimeDataIn )
+		private float nextNetworkConnectionRetrySec;
+
+		public NetworkClientUnityTransport(
+			ClientConfiguration configurationIn,
+			IClientRuntimeData runtimeDataIn )
 		{
 			configuration = configurationIn;
 			runtimeData = runtimeDataIn;
@@ -44,7 +50,7 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Client
 				}
 
 				Connect( configuration.AutoConnectServerAddress, configuration.AutoConnectServerPort );
-				runtimeData.NextNetworkConnectionRetrySec = Time.realtimeSinceStartup + configuration.NetworkConnectionRetryIntervalSec;
+				nextNetworkConnectionRetrySec = Time.realtimeSinceStartup + configuration.NetworkConnectionRetryIntervalSec;
 			}
 		}
 
@@ -62,14 +68,12 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Client
 
 			ProcessNetworkEvents();
 
-			if ( !IsConnected && (Time.realtimeSinceStartup > runtimeData.NextNetworkConnectionRetrySec) )
+			if ( !IsConnected && (runtimeData.TimeSec > nextNetworkConnectionRetrySec) )
 			{
 				Debug.Log( "reconnecting to server..." );
 
 				ResetConnection();
-				Connect( configuration.AutoConnectServerAddress, configuration.AutoConnectServerPort );
-
-				runtimeData.NextNetworkConnectionRetrySec = Time.realtimeSinceStartup + configuration.NetworkConnectionRetryIntervalSec;
+				Connect( serverAddress, serverPort );
 			}
 		}
 
@@ -103,11 +107,18 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Client
 			inboundMessages.Clear();
 		}
 
-		public void Connect( string serverAddress, int serverPort )
+		public void Connect( string serverAddressIn, int serverPortIn )
 		{
 			if ( IsConnected )
 			{
 				throw new InvalidOperationException( "This client is connected to a server already." );
+			}
+			else
+			{
+				serverAddress = serverAddressIn;
+				serverPort = serverPortIn;
+
+				nextNetworkConnectionRetrySec = runtimeData.TimeSec + configuration.NetworkConnectionRetryIntervalSec;
 			}
 
 			var serverIp = Dns.GetHostEntry( serverAddress ).AddressList

@@ -16,8 +16,8 @@
 		public int AutoConnectServerPort { get; set; }
 		public ServerConnectionData[] WellKnownServers { get; set; }
 
+		public float NetworkConnectionPingIntervalSec { get; set; }
 		public float NetworkConnectionRetryIntervalSec { get; set; }
 		public float NetworkConnectionTimeoutSec { get; set; }
-
 	}
 }

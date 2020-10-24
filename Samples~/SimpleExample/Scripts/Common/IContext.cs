@@ -7,9 +7,9 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Common
 {
     public interface IContext
     {
-        void EnterContext( IContext fromContext );
-        void LeaveContext( IContext toContext );
+        void EnterContext( IContextContainer contextContainer );
+        void LeaveContext( IContextContainer contextContainer );
 
-        void Update( float deltaTimeSec );
+        void Update( IContextContainer contextContainer, float deltaTimeSec );
     }
 }
