@@ -1,7 +1,6 @@
 using System;
-using System.Linq;
 
-namespace de.JochenHeckl.Unity.ACSSandbox.Example
+namespace de.JochenHeckl.Unity.ACSSandbox.Protocol
 {
 	public static class MessageIds
 	{

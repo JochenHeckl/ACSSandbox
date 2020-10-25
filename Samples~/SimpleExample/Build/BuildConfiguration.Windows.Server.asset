@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5a85b4c6a745c174382ffc71d67cd985, type: 3}
+  m_Name: BuildConfiguration.Windows.Server
+  m_EditorClassIdentifier: 
+  projectName: ACS Sandbox Server
+  scriptingImplementation: 1
+  managedStrippingLevel: 0
+  buildDefines: []
+  extraScriptingDefines: []
+  targetPath: Build/Server/Windows/ACSSandbox.Server.exe
+  buildOptions: 538985989
+  scenes:
+  - {fileID: 102900000, guid: 47e6a41fe73973741acb826224de18b3, type: 3}
+  target: 5
+  targetGroup: 1
+  assetBundleManifestPath: Build/Server/Windows

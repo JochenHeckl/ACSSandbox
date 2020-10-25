@@ -1,5 +1,6 @@
 {
   "ServerPort": 1337,
   "IntegrationTimeStepSec" : 0.01,
+  "TimeLapse" : 1.0,
   "MaxMessageSizeByte" : 1024
 }

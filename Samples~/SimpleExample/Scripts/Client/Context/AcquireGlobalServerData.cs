@@ -1,9 +1,9 @@
 ﻿using System;
 
-using de.JochenHeckl.Unity.ACSSandbox.Client;
-using de.JochenHeckl.Unity.ACSSandbox.Example;
+using de.JochenHeckl.Unity.ACSSandbox.Common;
+using de.JochenHeckl.Unity.ACSSandbox.Protocol;
 
-namespace de.JochenHeckl.Unity.ACSSandbox.Common
+namespace de.JochenHeckl.Unity.ACSSandbox.Client
 {
 	internal class AcquireGlobalServerData : IContext
 	{
@@ -50,7 +50,8 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Common
 		{
 			runtimeData.GlobalServerData = new GlobalServerData()
 			{
-				UptimeSec = message.UptimeSec
+				UptimeSec = message.UptimeSec,
+				LoggedInUserCount = message.LoggedInUserCount
 			};
 		}
 

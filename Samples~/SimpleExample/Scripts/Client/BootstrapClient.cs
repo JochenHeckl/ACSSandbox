@@ -1,24 +1,25 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
+using System.Linq;
 
 using UnityEngine;
 
-using de.JochenHeckl.Unity.IoCLight;
 using Newtonsoft.Json;
-using System.Linq;
+
+using de.JochenHeckl.Unity.IoCLight;
+
 using de.JochenHeckl.Unity.ACSSandbox.Common;
-using System.ComponentModel.Design.Serialization;
-using System.Collections.Generic;
-using de.JochenHeckl.Unity.ACSSandbox.Example;
+using de.JochenHeckl.Unity.ACSSandbox.Protocol;
+
+
 
 namespace de.JochenHeckl.Unity.ACSSandbox.Client
 {
-	public class BootstrapClient : BootstrapBase
+	public class BootstrapClient : BootstrapBase, IContextResolver
 	{
 		private static readonly string configurationFileName = "Configuration.Client.json";
 
 		[Space( 4 )]
-		[Header("Configuration")]
+		[Header( "Configuration" )]
 		public TextAsset defaultConfiguration;
 		public ClientResources clientResources;
 		public RectTransform userInterfaceRoot;
@@ -26,10 +27,12 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Client
 		private IClientRuntimeData runtimeData;
 		private IClientSystem[] clientSystems;
 
+		private readonly TimeSampler<IClientSystem> systemUpdateTimes = new TimeSampler<IClientSystem>();
+
 		public override void Compose()
 		{
-			Container.RegisterInstance( Container );
-				
+			Container.RegisterInstance( this ).As<IContextResolver>();
+
 			Container.RegisterInstance( ParseConfiguration() );
 			Container.RegisterInstance( clientResources ).SingleInstance();
 
@@ -40,35 +43,18 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Client
 			};
 
 			Container.RegisterInstance( runtimeData ).SingleInstance();
-			
+
 			Container.RegisterInstance( SetupMessageSerializer() ).SingleInstance();
 
 			Container.Register<NetworkClientUnityTransport>().SingleInstance();
-			Container.Register<NetworkMessageDispatcher>().SingleInstance();
-			
-			Container.Register<ContextSystem>().SingleInstance();
+			Container.Register<ClientNetworkMessageDispatcher>().SingleInstance();
+
+			Container.Register<ClientContextSystem>().SingleInstance();
 
 
 			Container.Register<Startup>();
-			Container.Register<Login>();
+			Container.Register<ConnectToServer>();
 			Container.Register<AcquireGlobalServerData>();
-		}
-
-		private IMessageSerializer SetupMessageSerializer()
-		{
-			var serializer = new MessageSerializerBson();
-
-			foreach ( var message in MessageIds.ClientToServerMessageIds )
-			{
-				serializer.RegisterType( message.messageId, message.messageType );
-			}
-
-			foreach ( var message in MessageIds.ServerToClientMessageIds )
-			{
-				serializer.RegisterType( message.messageId, message.messageType );
-			}
-
-			return serializer;
 		}
 
 		public void Start()
@@ -77,17 +63,22 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Client
 			Application.targetFrameRate = configuration.FPSLimit;
 
 			var contextSystem = Container.Resolve<IContextContainer>();
-			
+
 			clientSystems = Container.ResolveAll<IClientSystem>();
 
 			foreach ( var system in clientSystems )
 			{
 				system.Initialize();
+				systemUpdateTimes.InitSample( system );
 			}
 		}
 
 		public override void OnDestroy()
 		{
+			File.WriteAllLines( "clientSytemUpdateTimes.TimeSamples.md", systemUpdateTimes.MarkDownSamples(
+				"Client system update times",
+				( system ) => system.GetType().Name ) );
+
 			foreach ( var system in clientSystems.Reverse() )
 			{
 				system.Shutdown();
@@ -100,13 +91,26 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Client
 		{
 			foreach ( var system in clientSystems )
 			{
+				systemUpdateTimes.StartSample();
+
 				system.Update( Time.deltaTime );
+
+				systemUpdateTimes.StopSample( system );
 			}
+		}
+		public IContext Resolve<ContextType>()
+		{
+			return Resolve( typeof( ContextType ) );
+		}
+
+		public IContext Resolve( System.Type contextType )
+		{
+			return (IContext) Container.Resolve( contextType );
 		}
 
 		private ClientConfiguration ParseConfiguration()
 		{
-			string configuration = defaultConfiguration.text;
+			var configuration = defaultConfiguration.text;
 
 			if ( !Application.isEditor )
 			{
@@ -124,6 +128,23 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Client
 			}
 
 			return JsonConvert.DeserializeObject<ClientConfiguration>( configuration );
+		}
+
+		private IMessageSerializer SetupMessageSerializer()
+		{
+			var serializer = new MessageSerializerBson();
+
+			foreach ( var message in MessageIds.ClientToServerMessageIds )
+			{
+				serializer.RegisterType( message.messageId, message.messageType );
+			}
+
+			foreach ( var message in MessageIds.ServerToClientMessageIds )
+			{
+				serializer.RegisterType( message.messageId, message.messageType );
+			}
+
+			return serializer;
 		}
 	}
 }

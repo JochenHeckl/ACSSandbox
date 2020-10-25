@@ -3,5 +3,7 @@
 	class GlobalServerData
 	{
 		public float UptimeSec { get; set; }
+
+		public int LoggedInUserCount { get; set; }
 	}
 }

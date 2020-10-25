@@ -1,18 +1,16 @@
 ﻿using System;
 
 using de.JochenHeckl.Unity.ACSSandbox.Common;
-using de.JochenHeckl.Unity.ACSSandbox.Example;
-using de.JochenHeckl.Unity.IoCLight;
 
 namespace de.JochenHeckl.Unity.ACSSandbox.Client
 {
 	internal class Startup : IContext
 	{
-		private IContainer iocContainer;
+		private IContextResolver contextResolver;
 
-		public Startup( IContainer iocContainerIn )
+		public Startup( IContextResolver contextResolverIn )
 		{
-			iocContainer = iocContainerIn;
+			contextResolver = contextResolverIn;
 		}
 
 		public void EnterContext( IContextContainer contextContainer )
@@ -28,7 +26,7 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Client
 
 		public void Update( IContextContainer contextContainer, float deltaTimeSec )
 		{
-			contextContainer.PushConext( iocContainer.Resolve<Login>() );
+			contextContainer.PushConext( contextResolver.Resolve<ConnectToServer>() );
 		}
 	}
 }

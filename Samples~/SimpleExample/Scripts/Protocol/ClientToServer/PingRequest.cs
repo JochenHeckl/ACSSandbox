@@ -1,7 +1,7 @@
-﻿namespace de.JochenHeckl.Unity.ACSSandbox.Example
+﻿namespace de.JochenHeckl.Unity.ACSSandbox.Protocol
 {
 	public class PingRequest
 	{
-		public float PingTime { get; set; }
+		public float PingRequestTimeSec { get; set; }
 	}
 }

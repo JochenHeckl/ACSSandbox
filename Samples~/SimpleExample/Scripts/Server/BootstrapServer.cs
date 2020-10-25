@@ -1,6 +1,8 @@
 ﻿using System.IO;
 using System.Linq;
 
+using de.JochenHeckl.Unity.ACSSandbox.Common;
+using de.JochenHeckl.Unity.ACSSandbox.Protocol;
 using de.JochenHeckl.Unity.IoCLight;
 
 using Newtonsoft.Json;
@@ -9,25 +11,44 @@ using UnityEngine;
 
 namespace de.JochenHeckl.Unity.ACSSandbox.Server
 {
-	public class BootstrapServer : BootstrapBase
+	public class BootstrapServer : BootstrapBase, IContextResolver
 	{
 		private static readonly string configurationFileName = "Configuration.Server.json";
 
 		public TextAsset defaultConfiguration;
 
 		private ServerConfiguration configuration;
+		private IServerRuntimeData runtimeData;
 		private IServerSystem[] serverSystems;
 
 		private float lastIntegrationTimeSec;
 
+		private readonly TimeSampler<IServerSystem> systemUpdateTimes = new TimeSampler<IServerSystem>();
+
 		public override void Compose()
 		{
+			Container.RegisterInstance( this ).As<IContextResolver>();
+
 			Container.RegisterInstance( ParseConfiguration() );
 
-			Container.Register<ServerRuntimeData>().As<IServerRuntimeData>().SingleInstance();
+			runtimeData = new ServerRuntimeData()
+			{
+				ServerIntegrationTimeSec = 0f
+			};
 
-			Container.Register<NetworkServerUnityTransport>().As<INetworkServer>().SingleInstance();
-			Container.Register<SimulationSystem>().As<IServerSystem>().SingleInstance();
+			Container.RegisterInstance( runtimeData ).SingleInstance();
+
+			Container.RegisterInstance( SetupMessageSerializer() ).SingleInstance();
+
+			Container.Register<NetworkServerUnityTransport>().SingleInstance();
+			Container.Register<ServerNetworkMessageDispatcher>().SingleInstance();
+			Container.Register<ServerContextSystem>().SingleInstance();
+			Container.Register<SimulationSystem>().SingleInstance();
+
+
+			Container.Register<StartupServer>();
+			Container.Register<SimulateWorld>();
+			
 		}
 
 		public void Start()
@@ -35,9 +56,10 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Server
 			configuration = Container.Resolve<ServerConfiguration>();
 			serverSystems = Container.ResolveAll<IServerSystem>();
 
-			foreach( var system in serverSystems )
+			foreach ( var system in serverSystems )
 			{
 				system.Initialize();
+				systemUpdateTimes.InitSample( system );
 			}
 
 			lastIntegrationTimeSec = Time.realtimeSinceStartup;
@@ -45,6 +67,10 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Server
 
 		public override void OnDestroy()
 		{
+			File.WriteAllLines( "serverSytemUpdateTimes.TimeSamples.md", systemUpdateTimes.MarkDownSamples(
+				"Server system update times",
+				( system ) => system.GetType().Name ) );
+
 			foreach ( var system in serverSystems.Reverse() )
 			{
 				system.Shutdown();
@@ -63,18 +89,40 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Server
 			// unity will simply throttle down time to be able to keep up.
 			// We do not want this to happen behind our backs.
 
-			var targetTimeSec = Time.realtimeSinceStartup;
+			var nowSec = Time.realtimeSinceStartup;
+			var deltaRealTime = nowSec - lastIntegrationTimeSec;
+			lastIntegrationTimeSec = nowSec;
 
-			while ( lastIntegrationTimeSec < targetTimeSec )
+			var deltaIntegrationTime = deltaRealTime * configuration.TimeLapse;
+			var targetIntegrationTime = runtimeData.ServerIntegrationTimeSec + deltaIntegrationTime;
+
+			while ( runtimeData.ServerIntegrationTimeSec < targetIntegrationTime )
 			{
+				var integrationTimeStepSec = configuration.IntegrationTimeStepSec;
+
 				foreach ( var system in serverSystems )
 				{
-					system.Update( configuration.IntegrationTimeStepSec );
+					systemUpdateTimes.StartSample();
+
+					system.Update( integrationTimeStepSec );
+
+					systemUpdateTimes.StopSample( system );
 				}
 
-				lastIntegrationTimeSec += configuration.IntegrationTimeStepSec;
+				runtimeData.ServerIntegrationTimeSec += integrationTimeStepSec;
 			}
 		}
+
+		public IContext Resolve<ContextType>()
+		{
+			return Resolve( typeof( ContextType ) );
+		}
+
+		public IContext Resolve( System.Type contextType )
+		{
+			return (IContext) Container.Resolve( contextType );
+		}
+
 		private ServerConfiguration ParseConfiguration()
 		{
 			var configuration = defaultConfiguration.text;
@@ -95,6 +143,23 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Server
 			}
 
 			return JsonConvert.DeserializeObject<ServerConfiguration>( configuration );
+		}
+
+		private IMessageSerializer SetupMessageSerializer()
+		{
+			var serializer = new MessageSerializerBson();
+
+			foreach ( var message in MessageIds.ClientToServerMessageIds )
+			{
+				serializer.RegisterType( message.messageId, message.messageType );
+			}
+
+			foreach ( var message in MessageIds.ServerToClientMessageIds )
+			{
+				serializer.RegisterType( message.messageId, message.messageType );
+			}
+
+			return serializer;
 		}
 	}
 }

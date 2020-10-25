@@ -4,5 +4,7 @@
 	{
 		public float LastPingTimeMS { get; set; }
 		public float MovingAverage5PingMS { get; set; }
+		
+		public float ServerIntegrationTimeSec { get; set; }
 	}
 }
