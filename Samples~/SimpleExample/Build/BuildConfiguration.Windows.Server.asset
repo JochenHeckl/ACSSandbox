@@ -18,9 +18,9 @@ MonoBehaviour:
   buildDefines: []
   extraScriptingDefines: []
   targetPath: Build/Server/Windows/ACSSandbox.Server.exe
-  buildOptions: 538985989
+  buildOptions: 538984965
   scenes:
   - {fileID: 102900000, guid: 47e6a41fe73973741acb826224de18b3, type: 3}
-  target: 5
+  target: 19
   targetGroup: 1
   assetBundleManifestPath: Build/Server/Windows
