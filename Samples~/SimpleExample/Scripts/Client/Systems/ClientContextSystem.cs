@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 using de.JochenHeckl.Unity.ACSSandbox.Common;
 
@@ -18,12 +19,15 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Client
 
 		public void Initialize()
 		{
-			SwitchToContext( contextResolver.Resolve<Startup>() );
+			PushContext( contextResolver.Resolve<StartupClient>() );
 		}
 
 		public void Shutdown()
 		{
-			SwitchToContext( null );
+			while( contextStack.Count > 0 )
+			{
+				contextStack.Pop().LeaveContext( this );
+			}
 		}
 
 		public void Update( float deltaTimeSec )
@@ -33,7 +37,12 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Client
 
 		public void SwitchToContext( IContext newContext )
 		{
-			while ( contextStack.Count > 0 )
+			if( newContext == null )
+			{
+				throw new ArgumentNullException( nameof( newContext ) );
+			}
+
+			if ( contextStack.Count > 0 )
 			{
 				var currentContext = contextStack.Pop();
 				currentContext.LeaveContext( this );
@@ -43,7 +52,7 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Client
 			contextStack.Push( newContext );
 		}
 
-		public void PushConext( IContext context )
+		public void PushContext( IContext context )
 		{
 			contextStack.Push( context );
 			context.EnterContext( this );

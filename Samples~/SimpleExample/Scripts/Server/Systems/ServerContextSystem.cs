@@ -43,7 +43,7 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Server
 			contextStack.Push( newContext );
 		}
 
-		public void PushConext( IContext context )
+		public void PushContext( IContext context )
 		{
 			contextStack.Push( context );
 			context.EnterContext( this );

@@ -22,6 +22,8 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Client
 		[Header( "Configuration" )]
 		public TextAsset defaultConfiguration;
 		public ClientResources clientResources;
+
+		public Transform worldRoot;
 		public RectTransform userInterfaceRoot;
 
 		private IClientRuntimeData runtimeData;
@@ -39,6 +41,8 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Client
 			runtimeData = new ClientRuntimeData()
 			{
 				TimeSec = Time.realtimeSinceStartup,
+
+				WorldRoot = worldRoot,
 				UserInterfaceRoot = userInterfaceRoot
 			};
 
@@ -52,9 +56,9 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Client
 			Container.Register<ClientContextSystem>().SingleInstance();
 
 
-			Container.Register<Startup>();
+			Container.Register<StartupClient>();
 			Container.Register<ConnectToServer>();
-			Container.Register<AcquireGlobalServerData>();
+			Container.Register<EnterWorld>();
 		}
 
 		public void Start()

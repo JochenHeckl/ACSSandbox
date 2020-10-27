@@ -38,21 +38,23 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Server
 			// more or less a placeholder for now.
 			// we probably have to check for availability of services, register the server etc.
 
+			runtimeData.WorldId = configuration.ServerWorldId;
+
 			messageDispatcher.RegisterHandler<LoginRequest>( HandleLoginRequest );
 			messageDispatcher.RegisterHandler<PingRequest>( HandlePingRequest );
-			messageDispatcher.RegisterHandler<GlobalServerDataRequest>( HandleGlobalServerDataRequest );
+			messageDispatcher.RegisterHandler<ServerDataRequest>( HandleGlobalServerDataRequest );
 		}
 
 		public void LeaveContext( IContextContainer contextContainer )
 		{
 			messageDispatcher.UnregisterHandler<LoginRequest>( HandleLoginRequest );
 			messageDispatcher.UnregisterHandler<PingRequest>( HandlePingRequest );
-			messageDispatcher.UnregisterHandler<GlobalServerDataRequest>( HandleGlobalServerDataRequest );
+			messageDispatcher.UnregisterHandler<ServerDataRequest>( HandleGlobalServerDataRequest );
 		}
 
 		public void Update( IContextContainer contextContainer, float deltaTimeSec )
 		{
-			contextContainer.PushConext( contextResolver.Resolve<SimulateWorld>() );
+			contextContainer.PushContext( contextResolver.Resolve<SimulateWorld>() );
 		}
 
 		private void HandlePingRequest( int clientId, PingRequest message )

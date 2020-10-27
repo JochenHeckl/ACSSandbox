@@ -14,6 +14,12 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Client
 {
 	internal class ConnectToServer : IContext
 	{
+		private float connectionTimeoutSec;
+		private bool isConnecting;
+		private bool loginMessageWasSent;
+
+		private ContextUIView connectToServerView;
+
 		private readonly IContextResolver contextResolver;
 		private readonly ClientConfiguration configuration;
 		private readonly IClientResources resources;
@@ -21,13 +27,6 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Client
 		private readonly INetworkClient networkClient;
 		private readonly IMessageSerializer messageSerializer;
 		private readonly IMessageDispatcher messageDispatcher;
-		
-
-		private float connectionTimeoutSec;
-		private bool isConnecting;
-		private bool loginMessageWasSent;
-		
-		private ConnectToServerView connectToServerView;
 
 		public ConnectToServer(
 			IContextResolver contextResolverIn,
@@ -57,8 +56,11 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Client
 			}
 
 			var loginViewModel = MakeLogionViewModel();
-			runtimeData.ViewModels.LoginViewModel = loginViewModel;
-			
+			runtimeData.ViewModels.ConnectToServerViewModel = loginViewModel;
+
+			runtimeData.LobbyCamera.gameObject.SetActive( true );
+			runtimeData.WorldCamera.gameObject.SetActive( false );
+
 			connectToServerView.DataSource = loginViewModel;
 			connectToServerView.Show();
 		}
@@ -67,6 +69,8 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Client
 		{
 			connectToServerView.Hide();
 			UnityEngine.Object.Destroy( connectToServerView.gameObject, connectToServerView.fadeInTimeSec );
+
+			messageDispatcher.UnregisterHandler<LoginResponse>( HandleLoginResponse );
 		}
 
 		public void Update( IContextContainer contextContainer, float deltaTimeSec )
@@ -74,8 +78,6 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Client
 			if ( isConnecting && networkClient.IsConnected )
 			{
 				isConnecting = false;
-
-				contextContainer.SwitchToContext( contextResolver.Resolve<AcquireGlobalServerData>() );
 			}
 
 			if ( isConnecting && Time.realtimeSinceStartup > connectionTimeoutSec )
@@ -84,8 +86,8 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Client
 
 				isConnecting = false;
 
-				runtimeData.ViewModels.LoginViewModel.EnableLogin = !isConnecting;
-				runtimeData.ViewModels.LoginViewModel.NotifyViewModelChanged();
+				runtimeData.ViewModels.ConnectToServerViewModel.EnableLogin = !isConnecting;
+				runtimeData.ViewModels.ConnectToServerViewModel.NotifyViewModelChanged();
 
 				networkClient.ResetConnection();
 
@@ -98,13 +100,18 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Client
 				{
 					// TODO: use reasonable data
 					// just some hard coded login data to begin with...
-					// this would be data received from some kind of service like playfab
+					// this would be data received from some kind of service like PlayFab
 
 					UserId = Environment.UserName,
 					LoginToken = $"{Environment.UserName}@{Environment.MachineName}"
 				} );
 
 				loginMessageWasSent = true;
+			}
+
+			if( runtimeData.IsAuthenticated )
+			{
+				contextContainer.SwitchToContext( contextResolver.Resolve<EnterWorld>() );
 			}
 		}
 
@@ -158,8 +165,8 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Client
 
 		private void HandleLoginRequest( string serverAddress, int serverPort )
 		{
-			runtimeData.ViewModels.LoginViewModel.EnableLogin = false;
-			runtimeData.ViewModels.LoginViewModel.NotifyViewModelChanged();
+			runtimeData.ViewModels.ConnectToServerViewModel.EnableLogin = false;
+			runtimeData.ViewModels.ConnectToServerViewModel.NotifyViewModelChanged();
 
 			isConnecting = true;
 			connectionTimeoutSec = Time.realtimeSinceStartup + configuration.NetworkConnectionTimeoutSec;

@@ -7,7 +7,7 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Common
         IContext ActiveContext { get; }
 
         void SwitchToContext( IContext context );
-        void PushConext( IContext context );
+        void PushContext( IContext context );
         IContext PopContext();
     }
 }

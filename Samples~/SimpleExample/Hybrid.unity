@@ -171,6 +171,7 @@ MonoBehaviour:
   defaultConfiguration: {fileID: 4900000, guid: 0c407aa72b799764492f50c6863ad307,
     type: 3}
   clientResources: {fileID: 11400000, guid: e45819d65495c6b48b1d66b5370529c4, type: 2}
+  worldRoot: {fileID: 641172534}
   userInterfaceRoot: {fileID: 1963110191}
 --- !u!1 &867484908
 GameObject:

@@ -1,15 +1,10 @@
 ﻿using System;
-using System.Linq;
-
-using de.JochenHeckl.Unity.DataBinding;
 
 using TMPro;
 
-using UnityEngine;
-
 namespace de.JochenHeckl.Unity.ACSSandbox.Client
 {
-	public class ConnectToServerView : ClientView
+	public class ConnectToServerView : ContextUIView
 	{
 		public TMP_InputField serverAddress;
 		public TMP_InputField serverPort;

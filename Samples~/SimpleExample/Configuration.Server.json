@@ -1,6 +1,8 @@
 {
+  "ServerWorldId": "373ab1f6-8145-4480-836a-6deeb573a6f1",
+
   "ServerPort": 1337,
-  "IntegrationTimeStepSec" : 0.01,
-  "TimeLapse" : 1.0,
-  "MaxMessageSizeByte" : 1024
+  "IntegrationTimeStepSec": 0.01,
+  "DefaultTimeLapse": 1.0,
+  "MaxMessageSizeByte": 1024
 }

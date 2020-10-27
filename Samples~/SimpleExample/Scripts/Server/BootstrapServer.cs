@@ -90,26 +90,16 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Server
 			// We do not want this to happen behind our backs.
 
 			var nowSec = Time.realtimeSinceStartup;
-			var deltaRealTime = nowSec - lastIntegrationTimeSec;
+			var deltaRealTimeSec = nowSec - lastIntegrationTimeSec;
 			lastIntegrationTimeSec = nowSec;
 
-			var deltaIntegrationTime = deltaRealTime * configuration.TimeLapse;
-			var targetIntegrationTime = runtimeData.ServerIntegrationTimeSec + deltaIntegrationTime;
-
-			while ( runtimeData.ServerIntegrationTimeSec < targetIntegrationTime )
+			foreach ( var system in serverSystems )
 			{
-				var integrationTimeStepSec = configuration.IntegrationTimeStepSec;
+				systemUpdateTimes.StartSample();
 
-				foreach ( var system in serverSystems )
-				{
-					systemUpdateTimes.StartSample();
+				system.Update( deltaRealTimeSec );
 
-					system.Update( integrationTimeStepSec );
-
-					systemUpdateTimes.StopSample( system );
-				}
-
-				runtimeData.ServerIntegrationTimeSec += integrationTimeStepSec;
+				systemUpdateTimes.StopSample( system );
 			}
 		}
 

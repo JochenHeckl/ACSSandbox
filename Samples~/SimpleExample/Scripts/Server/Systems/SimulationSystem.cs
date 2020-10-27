@@ -7,10 +7,14 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Server
 		private readonly ServerConfiguration configuration;
 		private readonly IServerRuntimeData runtimeData;
 
+		private float timeLapse;
+
 		public SimulationSystem( ServerConfiguration configurationIn, IServerRuntimeData runtimeDataIn )
 		{
 			configuration = configurationIn;
 			runtimeData = runtimeDataIn;
+
+			timeLapse = configuration.DefaultTimeLapse;
 		}
 
 		public void Initialize()
@@ -23,7 +27,21 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Server
 			
 		}
 
-		public void Update( float deltaTime )
+		public void Update( float deltaTimeSec )
+		{
+			var deltaIntegrationTime = deltaTimeSec * timeLapse;
+			var targetIntegrationTime = runtimeData.ServerIntegrationTimeSec + deltaIntegrationTime;
+			var integrationTimeStepSec = configuration.IntegrationTimeStepSec;
+
+			while ( runtimeData.ServerIntegrationTimeSec < targetIntegrationTime )
+			{
+				UpdateSimulation( integrationTimeStepSec );
+
+				runtimeData.ServerIntegrationTimeSec += integrationTimeStepSec;
+			}
+		}
+
+		private void UpdateSimulation( float integrationTimeStepSec )
 		{
 			
 		}

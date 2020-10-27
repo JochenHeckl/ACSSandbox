@@ -1,18 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using de.JochenHeckl.Unity.DataBinding;
 
 using UnityEngine;
-using UnityEngine.UI;
+
+using de.JochenHeckl.Unity.DataBinding;
 
 namespace de.JochenHeckl.Unity.ACSSandbox.Client
 {
 	[RequireComponent( typeof( CanvasGroup ) )]
-	public class ClientView : ViewBehaviour
+	public class ContextUIView : ViewBehaviour
 	{
 		private enum FadeState
 		{

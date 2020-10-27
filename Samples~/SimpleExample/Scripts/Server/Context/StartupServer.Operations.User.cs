@@ -60,12 +60,13 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Server
 			}
 		}
 
-		private void HandleGlobalServerDataRequest( int clientId, GlobalServerDataRequest message )
+		private void HandleGlobalServerDataRequest( int clientId, ServerDataRequest message )
 		{
-			Send( clientId, new GlobalServerDataResponse()
+			Send( clientId, new ServerDataResponse()
 			{
 				UptimeSec = Time.realtimeSinceStartup,
-				LoggedInUserCount = runtimeData.AuthenticatedClients.Count
+				LoggedInUserCount = runtimeData.AuthenticatedClients.Count,
+				WorldId = runtimeData.WorldId
 			} );
 		}
 

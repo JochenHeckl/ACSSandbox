@@ -1,6 +1,6 @@
 ﻿namespace de.JochenHeckl.Unity.ACSSandbox.Protocol
 {
-	public class GlobalServerDataRequest
+	public class ServerDataRequest
 	{
 	}
 }
