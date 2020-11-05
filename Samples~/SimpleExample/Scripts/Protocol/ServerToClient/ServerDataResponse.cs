@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace de.JochenHeckl.Unity.ACSSandbox.Protocol
+namespace de.JochenHeckl.Unity.ACSSandbox.Protocol.ServerToClient
 {
 	public class ServerDataResponse
 	{

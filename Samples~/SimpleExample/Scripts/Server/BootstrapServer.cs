@@ -15,9 +15,14 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Server
 	{
 		private static readonly string configurationFileName = "Configuration.Server.json";
 
+		[Space( 4 )]
+		[Header( "Configuration" )]
 		public TextAsset defaultConfiguration;
+		public ServerResources serverResources;
+		public Transform worldRoot;
 
 		private ServerConfiguration configuration;
+
 		private IServerRuntimeData runtimeData;
 		private IServerSystem[] serverSystems;
 
@@ -28,12 +33,14 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Server
 		public override void Compose()
 		{
 			Container.RegisterInstance( this ).As<IContextResolver>();
+			Container.RegisterInstance( serverResources ).SingleInstance();
 
 			Container.RegisterInstance( ParseConfiguration() );
 
 			runtimeData = new ServerRuntimeData()
 			{
-				ServerIntegrationTimeSec = 0f
+				ServerIntegrationTimeSec = 0f,
+				WorldRoot = worldRoot,
 			};
 
 			Container.RegisterInstance( runtimeData ).SingleInstance();

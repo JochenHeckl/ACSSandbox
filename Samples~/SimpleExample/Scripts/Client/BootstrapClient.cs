@@ -22,7 +22,6 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Client
 		[Header( "Configuration" )]
 		public TextAsset defaultConfiguration;
 		public ClientResources clientResources;
-
 		public Transform worldRoot;
 		public RectTransform userInterfaceRoot;
 

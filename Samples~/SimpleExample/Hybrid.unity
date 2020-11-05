@@ -218,6 +218,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   defaultConfiguration: {fileID: 4900000, guid: 43f161ff15d56844a83d65ac81c3131e,
     type: 3}
+  serverResources: {fileID: 11400000, guid: eb7ea5f66333f984aa8b4865d730c698, type: 2}
+  worldRoot: {fileID: 867484909}
 --- !u!1 &1029698483
 GameObject:
   m_ObjectHideFlags: 0

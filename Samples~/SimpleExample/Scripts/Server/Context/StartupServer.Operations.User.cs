@@ -1,7 +1,8 @@
 ﻿using System.Linq;
 
 using de.JochenHeckl.Unity.ACSSandbox.Common;
-using de.JochenHeckl.Unity.ACSSandbox.Protocol;
+using de.JochenHeckl.Unity.ACSSandbox.Protocol.ClientToServer;
+using de.JochenHeckl.Unity.ACSSandbox.Protocol.ServerToClient;
 
 using UnityEngine;
 

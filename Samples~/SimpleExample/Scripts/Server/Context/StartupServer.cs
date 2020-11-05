@@ -1,8 +1,6 @@
-﻿using System;
-using System.Runtime.InteropServices.WindowsRuntime;
-
-using de.JochenHeckl.Unity.ACSSandbox.Common;
-using de.JochenHeckl.Unity.ACSSandbox.Protocol;
+﻿using de.JochenHeckl.Unity.ACSSandbox.Common;
+using de.JochenHeckl.Unity.ACSSandbox.Protocol.ClientToServer;
+using de.JochenHeckl.Unity.ACSSandbox.Protocol.ServerToClient;
 
 using UnityEngine;
 
@@ -12,6 +10,7 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Server
 	{
 		private IContextResolver contextResolver;
 		private ServerConfiguration configuration;
+		private IServerResources resources;
 		private IServerRuntimeData runtimeData;
 		private IMessageDispatcher messageDispatcher;
 		private INetworkServer networkServer;
@@ -20,13 +19,15 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Server
 		public StartupServer(
 			IContextResolver contextResolverIn,
 			ServerConfiguration configurationIn,
+			IServerResources resourcesIn,
 			IServerRuntimeData runtimeDataIn,
-		INetworkServer networkServerIn,
+			INetworkServer networkServerIn,
 			IMessageSerializer messageSerializerIn,
 			IMessageDispatcher messageDispatcherIn )
 		{
 			contextResolver = contextResolverIn;
 			configuration = configurationIn;
+			resources = resourcesIn;
 			runtimeData = runtimeDataIn;
 			networkServer = networkServerIn;
 			messageSerializer = messageSerializerIn;
@@ -39,6 +40,11 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Server
 			// we probably have to check for availability of services, register the server etc.
 
 			runtimeData.WorldId = configuration.ServerWorldId;
+			runtimeData.World = UnityEngine.Object.Instantiate(
+				resources.GetWorld( configuration.ServerWorldId ),
+				runtimeData.WorldRoot );
+			
+			runtimeData.World.gameObject.layer = runtimeData.WorldRoot.gameObject.layer;
 
 			messageDispatcher.RegisterHandler<LoginRequest>( HandleLoginRequest );
 			messageDispatcher.RegisterHandler<PingRequest>( HandlePingRequest );

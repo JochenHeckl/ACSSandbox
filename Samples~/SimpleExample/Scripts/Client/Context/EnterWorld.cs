@@ -1,13 +1,15 @@
-﻿using System;
-
-using de.JochenHeckl.Unity.ACSSandbox.Common;
-using de.JochenHeckl.Unity.ACSSandbox.Protocol;
+﻿using de.JochenHeckl.Unity.ACSSandbox.Common;
+using de.JochenHeckl.Unity.ACSSandbox.Protocol.ClientToServer;
+using de.JochenHeckl.Unity.ACSSandbox.Protocol.ServerToClient;
 
 namespace de.JochenHeckl.Unity.ACSSandbox.Client
 {
 	internal class EnterWorld : IContext
 	{
 		private ContextUIView contextUI;
+		
+		private bool gobalServerDataReceived;
+		private bool worldDataLoaded;
 
 		private readonly IContextResolver contextResolver;
 		private readonly ClientConfiguration configuration;
@@ -44,7 +46,7 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Client
 				contextUI = UnityEngine.Object.Instantiate( resources.EnterWorldView, runtimeData.UserInterfaceRoot );
 			}
 
-			var viewModel = EnterWorldViewModel();
+			var viewModel = MakeEnterWorldViewModel();
 			runtimeData.ViewModels.EnterWorldViewModel = viewModel;
 
 			runtimeData.LobbyCamera.gameObject.SetActive( true );
@@ -68,17 +70,27 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Client
 
 		public void Update( IContextContainer contextContainer, float deltaTimeSec )
 		{
-			if( runtimeData.GlobalServerData != null )
+			if ( gobalServerDataReceived && !worldDataLoaded )
 			{
-				if ( runtimeData.ViewModels.EnterWorldViewModel.StatusText != resources.StringResources.LoadingWorldText )
-				{
-					runtimeData.ViewModels.EnterWorldViewModel.StatusText = resources.StringResources.LoadingWorldText;
-					runtimeData.ViewModels.EnterWorldViewModel.NotifyViewModelChanged();
-				}
+				runtimeData.ViewModels.EnterWorldViewModel.StatusText = resources.StringResources.LoadingWorldText;
+				runtimeData.ViewModels.EnterWorldViewModel.NotifyViewModelChanged();
+
+				var worldPrefab = resources.GetWorld( runtimeData.GlobalServerData.WorldId );
+				runtimeData.World = UnityEngine.Object.Instantiate<World>( worldPrefab, runtimeData.WorldRoot );
+				runtimeData.World.gameObject.layer = runtimeData.WorldRoot.gameObject.layer;
+
+				runtimeData.World.ActiveCamera = runtimeData.WorldCamera;
+
+				runtimeData.WorldCamera.gameObject.SetActive( true );
+				runtimeData.LobbyCamera.gameObject.SetActive( false );
+
+				worldDataLoaded = true;
+
+				contextUI.Hide();
 			}
 		}
 
-		private EnterWorldViewModel EnterWorldViewModel()
+		private EnterWorldViewModel MakeEnterWorldViewModel()
 		{
 			return new EnterWorldViewModel()
 			{
@@ -92,8 +104,10 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Client
 			{
 				UptimeSec = message.UptimeSec,
 				LoggedInUserCount = message.LoggedInUserCount,
-				ServerWorldId = message.WorldId
+				WorldId = message.WorldId
 			};
+
+			gobalServerDataReceived = true;
 		}
 
 		private void Send( object message )

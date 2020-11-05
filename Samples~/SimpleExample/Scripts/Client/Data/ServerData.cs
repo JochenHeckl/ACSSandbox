@@ -7,6 +7,6 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Client
 		public float UptimeSec { get; set; }
 
 		public int LoggedInUserCount { get; set; }
-		public Guid ServerWorldId { get; internal set; }
+		public Guid WorldId { get; internal set; }
 	}
 }

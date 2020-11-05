@@ -2,7 +2,8 @@
 using System.Linq;
 
 using UnityEngine;
-using UnityEngine.Serialization;
+
+using de.JochenHeckl.Unity.ACSSandbox.Common;
 
 namespace de.JochenHeckl.Unity.ACSSandbox.Client
 {

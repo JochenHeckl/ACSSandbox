@@ -1,4 +1,4 @@
-﻿namespace de.JochenHeckl.Unity.ACSSandbox.Protocol
+﻿namespace de.JochenHeckl.Unity.ACSSandbox.Protocol.ServerToClient
 {
 	public class WorldState
 	{

@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 using de.JochenHeckl.Unity.ACSSandbox.Common;
-using de.JochenHeckl.Unity.ACSSandbox.Protocol;
-
-using UnityEngine;
+using de.JochenHeckl.Unity.ACSSandbox.Protocol.ClientToServer;
+using de.JochenHeckl.Unity.ACSSandbox.Protocol.ServerToClient;
 
 namespace de.JochenHeckl.Unity.ACSSandbox.Client
 {

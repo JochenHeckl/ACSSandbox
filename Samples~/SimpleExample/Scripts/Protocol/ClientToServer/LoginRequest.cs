@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace de.JochenHeckl.Unity.ACSSandbox.Protocol
+namespace de.JochenHeckl.Unity.ACSSandbox.Protocol.ClientToServer
 {
     public class LoginRequest
     {

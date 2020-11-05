@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 
+using de.JochenHeckl.Unity.ACSSandbox.Common;
+
 namespace de.JochenHeckl.Unity.ACSSandbox.Client
 {
 	internal class ClientRuntimeData : IClientRuntimeData
@@ -16,5 +18,6 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Client
 		public PingData PingData { get; set; }
 		public ServerData GlobalServerData { get; set; }
 		public bool IsAuthenticated { get; set; }
+		public World World { get; set; }
 	}
 }

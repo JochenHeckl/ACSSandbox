@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 
+using de.JochenHeckl.Unity.ACSSandbox.Common;
+
 namespace de.JochenHeckl.Unity.ACSSandbox.Client
 {
 	internal interface IClientRuntimeData
@@ -15,5 +17,6 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Client
 		bool IsAuthenticated { get; set; }
 		PingData PingData { get; set; }
 		ServerData GlobalServerData { get; set; }
+		World World { get; set; }
 	}
 }
