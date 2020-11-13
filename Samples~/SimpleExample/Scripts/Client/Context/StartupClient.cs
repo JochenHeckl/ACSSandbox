@@ -1,41 +1,41 @@
 ﻿using System;
 
-using UnityEngine;
-
 using de.JochenHeckl.Unity.ACSSandbox.Common;
+using de.JochenHeckl.Unity.ACSSandbox.Protocol.ServerToClient;
+
+using UnityEngine;
 
 namespace de.JochenHeckl.Unity.ACSSandbox.Client
 {
 	internal class StartupClient : IContext
 	{
-		private IContextResolver contextResolver;
-		private IClientRuntimeData runtimeData;
-		private IClientResources resources;
+		private readonly IClientRuntimeData runtimeData;
+		private readonly IClientResources resources;
 
-		public StartupClient( 
-			IContextResolver contextResolverIn,
-			IClientRuntimeData runtimeDataIn,
-			IClientResources resourcesIn )
+		public StartupClient( IClientRuntimeData runtimeDataIn, IClientResources resourcesIn )
 		{
-			contextResolver = contextResolverIn;
 			runtimeData = runtimeDataIn;
 			resources = resourcesIn;
 		}
 
 		public void EnterContext( IContextContainer contextContainer )
 		{
-			// more or less a placeholder for now.
-			// we probably have to check for availability of services, update the client etc
+			runtimeData.LobbyCamera = UnityEngine.Object.Instantiate( resources.LobbyCamera, runtimeData.WorldRoot );
+			runtimeData.WorldCamera = UnityEngine.Object.Instantiate( resources.WorldCamera, runtimeData.WorldRoot );
 
-			runtimeData.LobbyCamera = GameObject.Instantiate<Camera>( resources.LobbyCamera, runtimeData.WorldRoot );
-			runtimeData.WorldCamera = GameObject.Instantiate<Camera>( resources.WorldCamera, runtimeData.WorldRoot );
-
-			contextContainer.PushContext( contextResolver.Resolve<ConnectToServer>() );
+			contextContainer.PushContext( contextContainer.Resolve<ConnectToServer>() );
 		}
 
 		public void LeaveContext( IContextContainer contextContainer )
 		{
-			
+		}
+
+		public void ActivateContext( IContextContainer contextContainer )
+		{
+		}
+
+		public void DeactivateContext( IContextContainer contextContainer )
+		{
 		}
 
 		public void Update( IContextContainer contextContainer, float deltaTimeSec )

@@ -11,7 +11,8 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Protocol
 			{
 				(1, typeof( PingRequest )),
 				(3, typeof( LoginRequest )),
-				(5, typeof( ServerDataRequest ))
+				(5, typeof( ServerDataRequest )),
+				(8, typeof( SpawnRequest )),
 			};
 
 		public static (byte messageId, Type messageType)[] ServerToClientMessageIds => new (byte messageId, Type messageType)[]
@@ -19,7 +20,9 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Protocol
 				(2, typeof( PingResponse )),
 				(4, typeof( LoginResponse )),
 				(6, typeof( ServerDataResponse )),
-				(7, typeof( WorldState ))
+				(7, typeof( SpawnResponse ) ),
+				(9, typeof( WorldState )),
+				(10, typeof( UnitSync )),
 			};
 	}
 }

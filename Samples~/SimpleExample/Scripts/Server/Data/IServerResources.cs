@@ -10,5 +10,6 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Server
 	internal interface IServerResources
 	{
 		World GetWorld( Guid worldId );
+		ServerUnitView GetUnitPrefab( UnitTypeId unitTypeId );
 	}
 }

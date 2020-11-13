@@ -6,9 +6,8 @@ using UnityEngine;
 
 namespace de.JochenHeckl.Unity.ACSSandbox.Server
 {
-	internal partial class StartupServer : IContext
+	internal class StartupServer : IContext
 	{
-		private IContextResolver contextResolver;
 		private ServerConfiguration configuration;
 		private IServerResources resources;
 		private IServerRuntimeData runtimeData;
@@ -17,7 +16,6 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Server
 		private IMessageSerializer messageSerializer;
 
 		public StartupServer(
-			IContextResolver contextResolverIn,
 			ServerConfiguration configurationIn,
 			IServerResources resourcesIn,
 			IServerRuntimeData runtimeDataIn,
@@ -25,7 +23,6 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Server
 			IMessageSerializer messageSerializerIn,
 			IMessageDispatcher messageDispatcherIn )
 		{
-			contextResolver = contextResolverIn;
 			configuration = configurationIn;
 			resources = resourcesIn;
 			runtimeData = runtimeDataIn;
@@ -43,24 +40,26 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Server
 			runtimeData.World = UnityEngine.Object.Instantiate(
 				resources.GetWorld( configuration.ServerWorldId ),
 				runtimeData.WorldRoot );
-			
+
 			runtimeData.World.gameObject.layer = runtimeData.WorldRoot.gameObject.layer;
 
-			messageDispatcher.RegisterHandler<LoginRequest>( HandleLoginRequest );
 			messageDispatcher.RegisterHandler<PingRequest>( HandlePingRequest );
 			messageDispatcher.RegisterHandler<ServerDataRequest>( HandleGlobalServerDataRequest );
 		}
 
 		public void LeaveContext( IContextContainer contextContainer )
 		{
-			messageDispatcher.UnregisterHandler<LoginRequest>( HandleLoginRequest );
 			messageDispatcher.UnregisterHandler<PingRequest>( HandlePingRequest );
 			messageDispatcher.UnregisterHandler<ServerDataRequest>( HandleGlobalServerDataRequest );
 		}
 
+		public void ActivateContext( IContextContainer contextContainer ) { }
+
+		public void DeactivateContext( IContextContainer contextContainer ) { }
+
 		public void Update( IContextContainer contextContainer, float deltaTimeSec )
 		{
-			contextContainer.PushContext( contextResolver.Resolve<SimulateWorld>() );
+			contextContainer.PushContext( contextContainer.Resolve<SimulateWorld>() );
 		}
 
 		private void HandlePingRequest( int clientId, PingRequest message )
@@ -68,6 +67,15 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Server
 			Send( clientId, new PingResponse()
 			{
 				PingRequestTimeSec = message.PingRequestTimeSec
+			} );
+		}
+		private void HandleGlobalServerDataRequest( int clientId, ServerDataRequest message )
+		{
+			Send( clientId, new ServerDataResponse()
+			{
+				UptimeSec = Time.realtimeSinceStartup,
+				LoggedInUserCount = runtimeData.AuthenticatedClients.Count,
+				WorldId = runtimeData.WorldId
 			} );
 		}
 

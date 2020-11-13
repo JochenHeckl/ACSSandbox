@@ -9,14 +9,15 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Server
 {
 	internal interface IServerRuntimeData
 	{
-		Guid WorldId { get; set; }
-		World World { get; set; }
-
-		Transform WorldRoot { get; }
-
 		float ServerIntegrationTimeSec { get; set; }
-
+		
 		IList<int> ConnectedClients { get; }
 		IList<AuthenticatedClient> AuthenticatedClients { get; }
+
+		Guid WorldId { get; set; }
+		Transform WorldRoot { get; }
+		World World { get; set; }
+		
+		IList<IUnitData> Units { get; }
 	}
 }

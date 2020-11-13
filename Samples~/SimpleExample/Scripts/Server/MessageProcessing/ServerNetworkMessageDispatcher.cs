@@ -1,27 +1,36 @@
 ﻿using System;
+using System.Linq;
+using System.IO;
 
 using de.JochenHeckl.Unity.ACSSandbox.Common;
-using System.Diagnostics;
-using System.Collections.Generic;
-using UnityEngine;
-
-using Debug = UnityEngine.Debug;
-using System.IO;
 using de.JochenHeckl.Unity.ACSSandbox.Protocol;
+using de.JochenHeckl.Unity.ACSSandbox.Protocol.ClientToServer;
+
+using UnityEngine;
 
 namespace de.JochenHeckl.Unity.ACSSandbox.Server
 {
 	internal class ServerNetworkMessageDispatcher : TypeMapMessageDispatcher, IServerSystem
 	{
-		private INetworkServer networkServer;
-		private IMessageSerializer messageSerializer;
+		private readonly IServerRuntimeData runtimeData;
+		private readonly INetworkServer networkServer;
+		private readonly IMessageSerializer messageSerializer;
 
-		private TimeSampler<Type> dispatchTimes = new TimeSampler<Type>();
+		private readonly Type[] unrestrictedMessageTypes =
+		{
+			typeof( Ping ),
+			typeof( LoginRequest ),
+			typeof( ServerDataRequest )
+		};
+
+		private readonly TimeSampler<Type> dispatchTimes = new TimeSampler<Type>();
 
 		public ServerNetworkMessageDispatcher(
+			IServerRuntimeData runtimeDataIn,
 			INetworkServer networkServerIn,
 			IMessageSerializer messageSerializerIn )
 		{
+			runtimeData = runtimeDataIn;
 			networkServer = networkServerIn;
 			messageSerializer = messageSerializerIn;
 		}
@@ -48,7 +57,19 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Server
 				dispatchTimes.StartSample();
 
 				var message = messageSerializer.Deserialize( messageRaw.message );
-				DispatchMessage( messageRaw.clientConnectionId, message );
+
+				var noAuthorizationRequired = unrestrictedMessageTypes.Contains( message.GetType() );
+				var clientIsAuthorized = runtimeData.AuthenticatedClients.Any( x => x.ClientConnectionId == messageRaw.clientConnectionId );
+
+				if ( noAuthorizationRequired || clientIsAuthorized )
+				{
+					DispatchMessage( messageRaw.clientConnectionId, message );
+				}
+				else
+				{
+					Debug.LogWarning( $"restricted message {message.GetType()} received from unauthorized client { messageRaw.clientConnectionId }." +
+						$" Message type was {message.GetType()}" );
+				}
 
 				dispatchTimes.StopSample( message.GetType() );
 			}

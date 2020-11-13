@@ -2,7 +2,7 @@
 
 namespace de.JochenHeckl.Unity.ACSSandbox.Common
 {
-    public interface IContextContainer
+    public interface IContextContainer : IContextResolver
     {
         IContext ActiveContext { get; }
 

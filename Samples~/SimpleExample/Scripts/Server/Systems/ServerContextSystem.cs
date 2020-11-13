@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 using de.JochenHeckl.Unity.ACSSandbox.Common;
 
@@ -56,5 +57,16 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Server
 
 			return context;
 		}
+
+		public IContext Resolve<ContextType>()
+		{
+			return contextResolver.Resolve<ContextType>();
+		}
+
+		public IContext Resolve( Type contextType )
+		{
+			return contextResolver.Resolve( contextType );
+		}
+
 	}
 }

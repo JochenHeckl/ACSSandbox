@@ -29,3 +29,5 @@ MonoBehaviour:
     loadingWorldText: "Loading world\u2026"
   worlds:
   - {fileID: -1880526002337385838, guid: 2d4133284a42a8342addab0325e7587a, type: 3}
+  unitPrefabs:
+  - {fileID: 6684453058468808286, guid: 1e880498171df674ea454b6e39b065a1, type: 3}

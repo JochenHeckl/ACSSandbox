@@ -97,6 +97,7 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Client
 		public void Hide()
 		{
 			fadeState = FadeState.FadeOut;
+			Destroy( gameObject, fadeInTimeSec );
 		}
 	}
 }

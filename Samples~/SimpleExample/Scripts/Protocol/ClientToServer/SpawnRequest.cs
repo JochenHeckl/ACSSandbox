@@ -6,6 +6,6 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Protocol.ClientToServer
 {
     public class SpawnRequest
     {
-        public Vector3 SpawnLocation { get; set; }
+        public SerializableVector3 SpawnLocation { get; set; }
     }
 }

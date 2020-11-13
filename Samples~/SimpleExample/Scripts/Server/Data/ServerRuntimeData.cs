@@ -18,5 +18,6 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Server
 
 		public IList<int> ConnectedClients { get; set; } = new List<int>();
 		public IList<AuthenticatedClient> AuthenticatedClients { get; set; } = new List<AuthenticatedClient>();
+		public IList<IUnitData> Units { get; set; } = new List<IUnitData>();
 	}
 }

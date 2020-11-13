@@ -14,3 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   worlds:
   - {fileID: -1880526002337385838, guid: 2d4133284a42a8342addab0325e7587a, type: 3}
+  unitPrefabs:
+  - {fileID: 975756199092640952, guid: ffa2e7369b4eaf34b925a63031023738, type: 3}

@@ -9,6 +9,8 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Common
     {
         void EnterContext( IContextContainer contextContainer );
         void LeaveContext( IContextContainer contextContainer );
+        void ActivateContext( IContextContainer contextContainer );
+        void DeactivateContext( IContextContainer contextContainer );
 
         void Update( IContextContainer contextContainer, float deltaTimeSec );
     }

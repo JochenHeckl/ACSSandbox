@@ -17,5 +17,6 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Client
 		StringResources StringResources { get; }
 
 		World GetWorld( Guid worldId );
+		ClientUnitView GetUnitPrefab( UnitTypeId unitTypeId );
 	}
 }

@@ -14,9 +14,22 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Server
 	{
 		public World[] worlds;
 
+		public ServerUnitView[] unitPrefabs;
+
 		public World GetWorld( Guid worldId )
 		{
 			return worlds.FirstOrDefault( x => x.WorldId == worldId );
+		}
+		public ServerUnitView GetUnitPrefab( UnitTypeId unitTypeId )
+		{
+			var unitPrefab = unitPrefabs.First( x => x.UnitTypeId == unitTypeId );
+
+			if( unitPrefab == null )
+			{
+				throw new InvalidOperationException($"Unit Type {unitTypeId} was not properly defined.");
+			}
+
+			return UnityEngine.Object.Instantiate<ServerUnitView>( unitPrefab );
 		}
 	}
 }

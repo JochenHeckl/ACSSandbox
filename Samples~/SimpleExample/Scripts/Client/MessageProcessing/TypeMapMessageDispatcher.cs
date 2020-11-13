@@ -17,7 +17,7 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Client
 			messageHandlerMap[typeof( MessageType )] = ( message ) => messageHandler( (MessageType) message );
 		}
 
-		public void UnregisterHandler<MessageType>( Action<MessageType> messageHandler ) where MessageType : class
+		public void DeregisterHandler<MessageType>( Action<MessageType> messageHandler ) where MessageType : class
 		{
 			if( !messageHandlerMap.Remove( typeof( MessageType ) ) )
 			{

@@ -54,10 +54,11 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Client
 
 			Container.Register<ClientContextSystem>().SingleInstance();
 
+			Container.Register<ClientOperations>().As<IClientOperations>().SingleInstance();
 
 			Container.Register<StartupClient>();
 			Container.Register<ConnectToServer>();
-			Container.Register<EnterWorld>();
+			Container.Register<InteractWithWorld>();
 		}
 
 		public void Start()

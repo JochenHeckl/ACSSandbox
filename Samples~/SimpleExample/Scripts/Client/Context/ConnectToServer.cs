@@ -12,91 +12,75 @@ using UnityEngine.Events;
 
 namespace de.JochenHeckl.Unity.ACSSandbox.Client
 {
-	internal class ConnectToServer : IContext
+	internal partial class ConnectToServer : IContext
 	{
 		private float connectionTimeoutSec;
 		private bool isConnecting;
 		private bool loginMessageWasSent;
 
-		private ContextUIView connectToServerView;
+		private ContextUIView contextUI;
 
-		private readonly IContextResolver contextResolver;
-		private readonly ClientConfiguration configuration;
-		private readonly IClientResources resources;
-		private readonly IClientRuntimeData runtimeData;
-		private readonly INetworkClient networkClient;
-		private readonly IMessageSerializer messageSerializer;
-		private readonly IMessageDispatcher messageDispatcher;
+		private IClientOperations operations;
+		private ClientConfiguration configuration;
+		private IClientResources resources;
+		private IClientRuntimeData runtimeData;
+		private INetworkClient networkClient;
 
-		public ConnectToServer(
-			IContextResolver contextResolverIn,
+		public ConnectToServer( 
+			IClientOperations operationsIn,
 			ClientConfiguration configurationIn,
+			IClientResources resourcesIn,
 			IClientRuntimeData runtimeDataIn,
-			IClientResources clientResourcesIn,
-			INetworkClient networkClientIn,
-			IMessageSerializer messageSerializerIn,
-			IMessageDispatcher messageDispatcherIn )
+			INetworkClient networkClientIn )
 		{
-			contextResolver = contextResolverIn;
+			operations = operationsIn;
 			configuration = configurationIn;
-			resources = clientResourcesIn;
+			resources = resourcesIn;
 			runtimeData = runtimeDataIn;
 			networkClient = networkClientIn;
-			messageSerializer = messageSerializerIn;
-			messageDispatcher = messageDispatcherIn;
 		}
 
 		public void EnterContext( IContextContainer contextContainer )
 		{
-			messageDispatcher.RegisterHandler<LoginResponse>( HandleLoginResponse );
+			runtimeData.ServerData = null;
 
-			if ( connectToServerView == null )
-			{
-				connectToServerView = UnityEngine.Object.Instantiate( resources.ConnectToServerView, runtimeData.UserInterfaceRoot );
-			}
-
-			var loginViewModel = MakeLogionViewModel();
-			runtimeData.ViewModels.ConnectToServerViewModel = loginViewModel;
-
-			runtimeData.LobbyCamera.gameObject.SetActive( true );
-			runtimeData.WorldCamera.gameObject.SetActive( false );
-
-			connectToServerView.DataSource = loginViewModel;
-			connectToServerView.Show();
+			operations.RegisterHandler<LoginResponse>( HandleLoginResonse );
+			operations.RegisterHandler<UnitSync>( HandleUnitSync );
+			operations.RegisterHandler<ServerDataResponse>( HandleServerDataResponse );
 		}
 
 		public void LeaveContext( IContextContainer contextContainer )
 		{
-			connectToServerView.Hide();
-			UnityEngine.Object.Destroy( connectToServerView.gameObject, connectToServerView.fadeInTimeSec );
+			operations.DeregisterHandler<LoginResponse>( HandleLoginResonse );
+			operations.DeregisterHandler<UnitSync>( HandleUnitSync );
+			operations.DeregisterHandler<ServerDataResponse>( HandleServerDataResponse );
+		}
 
-			messageDispatcher.UnregisterHandler<LoginResponse>( HandleLoginResponse );
+		public void ActivateContext( IContextContainer contextContainer )
+		{
+			ShowContextUI();
+		}
+
+		public void DeactivateContext( IContextContainer contextContainer )
+		{
+			HideContextUI();
 		}
 
 		public void Update( IContextContainer contextContainer, float deltaTimeSec )
 		{
-			if ( isConnecting && networkClient.IsConnected )
+			if ( TestConnectionEstablished() )
 			{
 				isConnecting = false;
 			}
 
-			if ( isConnecting && Time.realtimeSinceStartup > connectionTimeoutSec )
+			if ( TestConnectionTimeout() )
 			{
-				// connection timeout
-
-				isConnecting = false;
-
-				runtimeData.ViewModels.ConnectToServerViewModel.EnableLogin = !isConnecting;
-				runtimeData.ViewModels.ConnectToServerViewModel.NotifyViewModelChanged();
-
-				networkClient.ResetConnection();
-
-				Debug.LogError( "Timeout connecting to server." );
+				HandleConnectionTimeout();
 			}
 
-			if( networkClient.IsConnected && !loginMessageWasSent )
+			if ( TestLoginRequestRequired() )
 			{
-				Send( new LoginRequest()
+				operations.Send( new LoginRequest()
 				{
 					// TODO: use reasonable data
 					// just some hard coded login data to begin with...
@@ -109,10 +93,59 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Client
 				loginMessageWasSent = true;
 			}
 
-			if( runtimeData.IsAuthenticated )
+			if ( runtimeData.IsAuthenticated && (runtimeData.ServerData != null) )
 			{
-				contextContainer.SwitchToContext( contextResolver.Resolve<EnterWorld>() );
+				contextContainer.PushContext( contextContainer.Resolve<InteractWithWorld>() );
 			}
+		}
+
+		private bool TestLoginRequestRequired()
+		{
+			return networkClient.IsConnected && !loginMessageWasSent;
+		}
+
+		private bool TestConnectionEstablished()
+		{
+			return isConnecting && networkClient.IsConnected;
+		}
+
+		private bool TestConnectionTimeout()
+		{
+			return isConnecting && Time.realtimeSinceStartup > connectionTimeoutSec;
+		}
+
+		private void HandleConnectionTimeout()
+		{
+			isConnecting = false;
+
+			runtimeData.ViewModels.ConnectToServerViewModel.EnableLogin = !isConnecting;
+			runtimeData.ViewModels.ConnectToServerViewModel.NotifyViewModelChanged();
+
+			networkClient.ResetConnection();
+
+			Debug.LogError( "Timeout connecting to server." );
+		}
+
+		private void ShowContextUI()
+		{
+			if ( contextUI == null )
+			{
+				contextUI = UnityEngine.Object.Instantiate( resources.ConnectToServerView, runtimeData.UserInterfaceRoot );
+			}
+
+			var loginViewModel = MakeLogionViewModel();
+			runtimeData.ViewModels.ConnectToServerViewModel = loginViewModel;
+
+			runtimeData.LobbyCamera.gameObject.SetActive( true );
+			runtimeData.WorldCamera.gameObject.SetActive( false );
+
+			contextUI.DataSource = loginViewModel;
+			contextUI.Show();
+		}
+
+		private void HideContextUI()
+		{
+			contextUI.Hide();
 		}
 
 		private ConnectToServerViewModel MakeLogionViewModel()
@@ -145,7 +178,7 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Client
 				// login button
 				LoginButtonLabel = resources.StringResources.LoginLabel,
 				EnableLogin = true,
-				LoginAction = HandleLoginRequest
+				LoginAction = HandleLoginAction
 			};
 
 			loginViewModel.WellKnownHostValueChanged
@@ -163,7 +196,23 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Client
 			loginViewModel.NotifyViewModelChanged();
 		}
 
-		private void HandleLoginRequest( string serverAddress, int serverPort )
+		public void HandleLoginResonse( LoginResponse message )
+		{
+			runtimeData.IsAuthenticated = message.LoginResult == LoginResult.OK;
+			operations.Send( new ServerDataRequest() );
+		}
+
+		public void HandleServerDataResponse( ServerDataResponse message )
+		{
+			runtimeData.ServerData = new ServerData()
+			{
+				UptimeSec = message.UptimeSec,
+				LoggedInUserCount = message.LoggedInUserCount,
+				WorldId = message.WorldId,
+			};
+		}
+
+		private void HandleLoginAction( string serverAddress, int serverPort )
 		{
 			runtimeData.ViewModels.ConnectToServerViewModel.EnableLogin = false;
 			runtimeData.ViewModels.ConnectToServerViewModel.NotifyViewModelChanged();
@@ -172,16 +221,6 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Client
 			connectionTimeoutSec = Time.realtimeSinceStartup + configuration.NetworkConnectionTimeoutSec;
 
 			networkClient.Connect( serverAddress, serverPort );
-		}
-
-		private void HandleLoginResponse( LoginResponse message )
-		{
-			runtimeData.IsAuthenticated = message.LoginResult == LoginResult.OK;
-		}
-
-		private void Send( object message )
-		{
-			networkClient.Send( messageSerializer.Serialize( message ) );
 		}
 	}
 }
