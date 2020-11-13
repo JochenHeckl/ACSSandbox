@@ -1,0 +1,54 @@
+[33mcommit 05700f3e77a8795dcca9e244ecad41f059639eef[m[33m ([m[1;36mHEAD -> [m[1;32mmaster[m[33m, [m[1;31morigin/master[m[33m)[m
+Author: Jochen Heckl <jochen.heckl@gmail.com>
+Date:   Fri Nov 13 16:04:08 2020 +0100
+
+    UnitSync is working.
+
+[33mcommit 3c67f583123069d8d6bb07cf1c686ae3e10e4c48[m
+Author: Jochen Heckl <jochen.heckl@gmail.com>
+Date:   Thu Nov 5 19:04:38 2020 +0100
+
+    Made more preparations for spawning and syncing
+
+[33mcommit 11b71848673e7b15cdaaa3b440393eca4cbcb6ce[m
+Author: Jochen Heckl <jochen.heckl@gmail.com>
+Date:   Tue Oct 27 16:44:43 2020 +0100
+
+    minor fixes and cleanups.
+
+[33mcommit 2057eae93efa1f5303377c409e534603c597530e[m
+Author: Jochen Heckl <jochen.heckl@gmail.com>
+Date:   Mon Oct 26 14:17:50 2020 +0100
+
+    fixed build settings for windows server.
+
+[33mcommit 5c310a2c7905a538568d95b7ee37940cbc07d848[m
+Author: Jochen Heckl <jochen.heckl@gmail.com>
+Date:   Sun Oct 25 15:50:44 2020 +0100
+
+    Login works.
+    Client and server message handling cleaned up.
+    Introduced TimeSampler.
+    Added ACS Sandbox menu.
+    Added Standalone server build.
+
+[33mcommit 94ae5d58c9306311cae9a25e2c116ea950cff5fa[m
+Author: Jochen <jochen.heckl@gmail.com>
+Date:   Sat Oct 24 18:08:38 2020 +0200
+
+    Create README.md
+
+[33mcommit 2af2cc9bc8561da861d8832c903cdc6de0cb790a[m
+Author: Jochen Heckl <jochen.heckl@gmail.com>
+Date:   Sat Oct 24 18:04:49 2020 +0200
+
+    Basic Client Context management done.
+    Client sends basic messages for login.
+
+[33mcommit a7b3655fdaaf4bd8899f067f5e54b5cb5cae2b9b[m
+Author: Jochen Heckl <jochen.heckl@gmail.com>
+Date:   Wed Oct 21 15:51:02 2020 +0200
+
+    Initial commit
+    
+    Containing basic client and server logic aswell as package scaffolding.
