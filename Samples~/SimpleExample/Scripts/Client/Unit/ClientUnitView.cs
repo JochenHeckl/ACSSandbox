@@ -4,14 +4,14 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Client
 {
 	public class ClientUnitView : UnitView
 	{
-		public ClientUnitData ClientUnitData { get; set; }
+		public ClientUnitData UnitData { get; set; }
 
 		public void Update()
 		{
-			if ( ClientUnitData != null )
+			if ( UnitData != null )
 			{
-				transform.position = ClientUnitData.Position;
-				transform.rotation = ClientUnitData.Rotation;
+				transform.position = UnitData.Position;
+				transform.rotation = UnitData.Rotation;
 			}
 		}
 	}

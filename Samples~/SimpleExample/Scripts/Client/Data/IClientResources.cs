@@ -12,7 +12,7 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Client
 		ContextUIView EnterWorldView { get; }
 
 		Camera LobbyCamera { get; }
-		Camera WorldCamera { get; }
+		WorldCamera WorldCamera { get; }
 
 		StringResources StringResources { get; }
 

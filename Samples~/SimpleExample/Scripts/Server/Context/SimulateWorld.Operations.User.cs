@@ -69,25 +69,50 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Server
 		{
 			var client = runtimeData.AuthenticatedClients.First( x => x.ClientConnectionId == clientId );
 
-			var controlledUnit = runtimeData.Units.FirstOrDefault( x => x.ControllingUserId == client.UserId );
+			if( client == null )
+			{
+				Send( clientId, new SpawnResponse()
+				{
+					Result = SpawnRequestResult.AuthenticationFailure,
+					ControlledUnitId = -1
+				} );
+			}
 
-			var serverGameObject = UnityEngine.Object.Instantiate<ServerUnitView>(
+			var controlledUnit = runtimeData.Units.Values
+				.Select( x => x.unitData )
+				.FirstOrDefault( x => x.ControllingUserId == client.UserId );
+
+			if ( controlledUnit == null )
+			{
+				controlledUnit = new ServerUnitData()
+				{
+					UnitId = MakeUnitId(),
+					UnityTypeId = UnitTypeId.SampleUnitType,
+					ControllingUserId = client.UserId,
+					Position = message.SpawnLocation,
+					Rotation = Quaternion.identity,
+				};
+
+				var serverUnitView = UnityEngine.Object.Instantiate(
 				resources.GetUnitPrefab( UnitTypeId.SampleUnitType ),
 				message.SpawnLocation,
 				Quaternion.identity,
 				runtimeData.World.unitRoot );
 
-			if ( controlledUnit == null )
-			{
-				runtimeData.Units.Add( new ServerUnitData()
+				serverUnitView.DataSource = new ServerUnitViewModel()
 				{
-					UnitId = MakeUnitId(),
-					UnityTypeId = UnitTypeId.SampleUnitType,
-					ControllingUserId = client.UserId,
-					Position = serverGameObject.transform.position,
-					Rotation = serverGameObject.transform.rotation,
-				} );
+					UnitData = controlledUnit
+				};
+
+				
+				runtimeData.Units[ controlledUnit.UnitId ] = ( controlledUnit, serverUnitView );
 			}
+
+			Send( clientId, new SpawnResponse()
+			{
+				Result = SpawnRequestResult.Success,
+				ControlledUnitId = controlledUnit.UnitId
+			} );
 		}
 
 		private long MakeUnitId()

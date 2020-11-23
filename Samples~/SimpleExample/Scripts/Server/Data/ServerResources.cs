@@ -29,7 +29,7 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Server
 				throw new InvalidOperationException($"Unit Type {unitTypeId} was not properly defined.");
 			}
 
-			return UnityEngine.Object.Instantiate<ServerUnitView>( unitPrefab );
+			return unitPrefab;
 		}
 	}
 }

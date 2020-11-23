@@ -84,14 +84,14 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Server
 				.Select( x => x.ClientConnectionId )
 				.ToArray();
 
-			var units = runtimeData.Units
+			var units = runtimeData.Units.Values
 				.Select( x => new UnitSync.UnitData()
 				{
-					UnitId = x.UnitId,
-					Position = x.Position,
-					Rotation = x.Rotation,
-					UnitTypeId = x.UnityTypeId,
-					ControllingUserId = x.ControllingUserId
+					UnitId = x.unitData.UnitId,
+					Position = x.unitData.Position,
+					Rotation = x.unitData.Rotation,
+					UnitTypeId = x.unitData.UnityTypeId,
+					ControllingUserId = x.unitData.ControllingUserId
 				} )
 				.ToArray();
 

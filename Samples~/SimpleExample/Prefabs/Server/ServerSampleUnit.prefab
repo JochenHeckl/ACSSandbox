@@ -95,6 +95,7 @@ MonoBehaviour:
     assemblyQualifiedName: de.JochenHeckl.Unity.ACSSandbox.Server.ServerUnitViewModel,
       de.JochenHeckl.Unity.ACSSandbox.Server, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
   condenseValidBuilders: 1
+  unitId: 0
   unitTypeId: 1
 --- !u!114 &3974966571370442054
 MonoBehaviour:

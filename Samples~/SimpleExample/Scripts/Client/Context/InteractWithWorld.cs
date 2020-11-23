@@ -62,9 +62,9 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Client
 				runtimeData.World = UnityEngine.Object.Instantiate<World>( worldPrefab, runtimeData.WorldRoot );
 				runtimeData.World.gameObject.layer = runtimeData.WorldRoot.gameObject.layer;
 
-				runtimeData.World.ActiveCamera = runtimeData.WorldCamera;
+				runtimeData.World.ActiveCamera = runtimeData.WorldCamera.ActiveCamera;
 
-				runtimeData.WorldCamera.gameObject.SetActive( true );
+				runtimeData.WorldCamera.SetActive( true );
 				runtimeData.LobbyCamera.gameObject.SetActive( false );
 
 				worldDataLoaded = true;
@@ -89,7 +89,7 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Client
 			runtimeData.ViewModels.EnterWorldViewModel = viewModel;
 
 			runtimeData.LobbyCamera.gameObject.SetActive( true );
-			runtimeData.WorldCamera.gameObject.SetActive( false );
+			runtimeData.WorldCamera.SetActive( false );
 
 			contextUI.DataSource = viewModel;
 			contextUI.Show();
@@ -105,6 +105,8 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Client
 
 		private void HandleSpawnResponse( SpawnResponse message )
 		{
+			runtimeData.ControlledUnitId = message.ControlledUnitId;
+
 			// spawnRequestSuccess = message.Result == SpawnRequestResult.Success;
 		}
 	}

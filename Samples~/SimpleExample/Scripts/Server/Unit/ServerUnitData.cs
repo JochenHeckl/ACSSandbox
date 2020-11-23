@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace de.JochenHeckl.Unity.ACSSandbox.Server
 {
-	public class ServerUnitData : IUnitData
+	public class ServerUnitData : IServerUnitData
 	{
 		public long UnitId { get; set; }
 		public UnitTypeId UnityTypeId { get; set; }

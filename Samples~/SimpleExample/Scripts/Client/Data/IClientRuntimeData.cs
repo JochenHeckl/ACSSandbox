@@ -11,7 +11,7 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Client
 		public float TimeSec { get; }
 
 		public Camera LobbyCamera { get; set; }
-		public Camera WorldCamera { get; set; }
+		public IWorldCamera WorldCamera { get; set; }
 
 		Transform WorldRoot { get; }
 		RectTransform UserInterfaceRoot { get; }
@@ -21,6 +21,7 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Client
 		ServerData ServerData { get; set; }
 
 		World World { get; set; }
+		long ControlledUnitId { get; set; }
 
 		IDictionary<long, (ClientUnitData unitData, ClientUnitView unitView)> Units { get; set; }
 	}

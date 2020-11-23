@@ -9,6 +9,6 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Server
 {
 	public class ServerUnitViewModel : ViewModelBase
 	{
-		public ServerUnitData UnitData { get; set; }
+		public IServerUnitData UnitData { get; set; }
 }
 }

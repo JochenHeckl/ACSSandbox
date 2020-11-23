@@ -4,6 +4,8 @@ using System.Linq;
 using de.JochenHeckl.Unity.ACSSandbox.Common;
 using de.JochenHeckl.Unity.ACSSandbox.Protocol.ServerToClient;
 
+using UnityEngine;
+
 namespace de.JochenHeckl.Unity.ACSSandbox.Client
 {
 	internal partial class ConnectToServer : IContext
@@ -28,9 +30,11 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Client
 
 			foreach( var remoteUnit in message.Units )
 			{
+				(ClientUnitData unitData, ClientUnitView unitView) localUnit;
+
 				if( unitsToCreate.Contains( remoteUnit.UnitId ) )
 				{
-					var clientUnitData = new ClientUnitData()
+					var localUnitData = new ClientUnitData()
 					{
 						UnitId = remoteUnit.UnitId,
 						Position = remoteUnit.Position,
@@ -39,23 +43,30 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Client
 						UnityTypeId = remoteUnit.UnitTypeId
 					};
 
-					var unitView = resources.GetUnitPrefab( remoteUnit.UnitTypeId );
+					var unitPrefab = resources.GetUnitPrefab( remoteUnit.UnitTypeId );
+					var localUnitView = UnityEngine.Object.Instantiate<ClientUnitView>( unitPrefab, runtimeData.World.UnitRoot);
 
-					UnityEngine.Object.Instantiate<ClientUnitView>(unitView, runtimeData.World.UnitRoot);
-
-					unitView.DataSource = new ClientUnitViewModel()
+					localUnitView.DataSource = new ClientUnitViewModel()
 					{
-						ClientUnitData = clientUnitData
+						UnitData = localUnitData
 					};
 
-					runtimeData.Units[remoteUnit.UnitId] = (clientUnitData, unitView);
+					localUnit = (localUnitData, localUnitView);
+					runtimeData.Units[remoteUnit.UnitId] = localUnit;
 				}
 				else
 				{
-					var existingUnitData = runtimeData.Units[remoteUnit.UnitId].unitData;
+					localUnit = runtimeData.Units[remoteUnit.UnitId];
 
-					existingUnitData.Position = remoteUnit.Position;
-					existingUnitData.Rotation = remoteUnit.Rotation;
+					localUnit.unitData.Position = remoteUnit.Position;
+					localUnit.unitData.Rotation = remoteUnit.Rotation;
+					localUnit.unitData.ControllingUserId = remoteUnit.ControllingUserId;
+
+				}
+
+				if( localUnit.unitData.UnitId == runtimeData.ControlledUnitId )
+				{
+					runtimeData.WorldCamera.TrackGameObjects( new Transform[] { localUnit.unitView.transform } );
 				}
 			}
 		}

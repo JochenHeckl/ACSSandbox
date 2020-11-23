@@ -4,6 +4,15 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Server
 {
 	public class ServerUnitView : UnitView
 	{
-		public ServerUnitData UnitData { get; set; }
+		public IServerUnitData UnitData { get; set; }
+
+		public void Update()
+		{
+			if ( UnitData != null )
+			{
+				transform.position = UnitData.Position;
+				transform.rotation = UnitData.Rotation;
+			}
+		}
 	}
 }

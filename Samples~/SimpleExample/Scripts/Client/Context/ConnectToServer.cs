@@ -137,7 +137,7 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Client
 			runtimeData.ViewModels.ConnectToServerViewModel = loginViewModel;
 
 			runtimeData.LobbyCamera.gameObject.SetActive( true );
-			runtimeData.WorldCamera.gameObject.SetActive( false );
+			runtimeData.WorldCamera.SetActive( false );
 
 			contextUI.DataSource = loginViewModel;
 			contextUI.Show();

@@ -18,7 +18,7 @@ MonoBehaviour:
     type: 3}
   lobbyCamera: {fileID: 8490538732768848091, guid: 02d00ae5e679cb04abe9c9e17347d321,
     type: 3}
-  worldCamera: {fileID: 7959700527603137228, guid: d07a9aed81e6d43469c49a30bc27d7a0,
+  worldCamera: {fileID: 2678597387498772905, guid: d07a9aed81e6d43469c49a30bc27d7a0,
     type: 3}
   stringResources:
     wellKnownHostsLabel: Well Known Hosts

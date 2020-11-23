@@ -17,7 +17,7 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Server
 		Guid WorldId { get; set; }
 		Transform WorldRoot { get; }
 		World World { get; set; }
-		
-		IList<IUnitData> Units { get; }
+
+		IDictionary<long, (IServerUnitData unitData, ServerUnitView unitView)> Units { get; set; }
 	}
 }

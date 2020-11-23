@@ -20,8 +20,8 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Client
 		public Camera lobbyCamera;
 		public Camera LobbyCamera => lobbyCamera;
 
-		public Camera worldCamera;
-		public Camera WorldCamera => worldCamera;
+		public WorldCamera worldCamera;
+		public WorldCamera WorldCamera => worldCamera;
 
 
 		public StringResources stringResources;
@@ -44,7 +44,7 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Client
 				throw new InvalidOperationException( $"Unit Type {unitTypeId} was not properly defined." );
 			}
 
-			return UnityEngine.Object.Instantiate<ClientUnitView>( unitPrefab );
+			return unitPrefab;
 		}
 	}
 }
