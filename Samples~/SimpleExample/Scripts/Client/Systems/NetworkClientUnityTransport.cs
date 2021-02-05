@@ -88,12 +88,16 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Client
 
 				var writer = networkDriver.BeginSend( networkConnection );
 
-				using ( var nativeMessage = new NativeArray<byte>( message, Allocator.Temp ) )
+				if ( writer.IsCreated )
 				{
-					writer.WriteBytes( nativeMessage );
-				}
 
-				networkDriver.EndSend( writer );
+					using ( var nativeMessage = new NativeArray<byte>( message, Allocator.Temp ) )
+					{
+						writer.WriteBytes( nativeMessage );
+					}
+
+					networkDriver.EndSend( writer );
+				}
 			}
 		}
 

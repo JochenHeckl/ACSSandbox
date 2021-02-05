@@ -4,6 +4,8 @@ using de.JochenHeckl.Unity.ACSSandbox.Common;
 using de.JochenHeckl.Unity.ACSSandbox.Protocol.ClientToServer;
 using de.JochenHeckl.Unity.ACSSandbox.Protocol.ServerToClient;
 
+using UnityEngine;
+
 namespace de.JochenHeckl.Unity.ACSSandbox.Client
 {
 	internal class InteractWithWorld : IContext
@@ -32,13 +34,15 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Client
 		public void EnterContext( IContextContainer contextContainer )
 		{
 			operations.RegisterHandler<SpawnResponse>( HandleSpawnResponse );
-			
+			operations.RegisterHandler<NavigateToPositionResponse>( HandleNavigateToPositionResponse );
+
 			ShowContextUI();
 		}
 
 		public void LeaveContext( IContextContainer contextContainer )
 		{
-			operations.RegisterHandler<SpawnResponse>( HandleSpawnResponse );
+			operations.DeregisterHandler<NavigateToPositionResponse>( HandleNavigateToPositionResponse );
+			operations.DeregisterHandler<SpawnResponse>( HandleSpawnResponse );
 		}
 
 		public void ActivateContext( IContextContainer contextContainer )
@@ -59,8 +63,8 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Client
 				runtimeData.ViewModels.EnterWorldViewModel.NotifyViewModelChanged();
 
 				var worldPrefab = resources.GetWorld( runtimeData.ServerData.WorldId );
-				runtimeData.World = UnityEngine.Object.Instantiate<World>( worldPrefab, runtimeData.WorldRoot );
-				runtimeData.World.gameObject.layer = runtimeData.WorldRoot.gameObject.layer;
+				runtimeData.World = Object.Instantiate( worldPrefab, runtimeData.WorldRoot );
+				runtimeData.World.gameObject.RecursiveMoveToLayer( runtimeData.WorldRoot.gameObject.layer );
 
 				runtimeData.World.ActiveCamera = runtimeData.WorldCamera.ActiveCamera;
 
@@ -108,6 +112,11 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Client
 			runtimeData.ControlledUnitId = message.ControlledUnitId;
 
 			// spawnRequestSuccess = message.Result == SpawnRequestResult.Success;
+		}
+
+		private void HandleNavigateToPositionResponse( NavigateToPositionResponse message )
+		{
+
 		}
 	}
 }

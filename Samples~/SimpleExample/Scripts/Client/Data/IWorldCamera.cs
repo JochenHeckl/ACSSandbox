@@ -6,6 +6,8 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Client
 	{
 		Camera ActiveCamera { get; }
 		void TrackGameObjects( Transform[] targets );
+
+		bool IsActive { get; }
 		void SetActive( bool active );
 	}
 }

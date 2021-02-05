@@ -16,5 +16,8 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Server
 		public string ControllingUserId { get; set; }
 		public Vector3 Position { get; set; }
 		public Quaternion Rotation { get; set; }
+
+		public Vector3 Destination { get; set; }
+		public float MaxSpeedMetersPerSec { get; set; }
 	}
 }

@@ -52,6 +52,7 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Server
 			Container.Register<ServerContextSystem>().SingleInstance();
 			Container.Register<SimulationSystem>().SingleInstance();
 
+			Container.Register<ServerOperations>().As<IServerOperations>();
 
 			Container.Register<StartupServer>();
 			Container.Register<SimulateWorld>();

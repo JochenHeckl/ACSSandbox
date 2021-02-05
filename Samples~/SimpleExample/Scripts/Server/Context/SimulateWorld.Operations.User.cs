@@ -17,7 +17,7 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Server
 		{
 			if ( !ValidateUser( message.UserId, message.LoginToken ) )
 			{
-				Send( clientId, new LoginResponse()
+				operations.Send( clientId, new LoginResponse()
 				{
 					LoginResult = LoginResult.AuthenticationError
 				} );
@@ -47,7 +47,7 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Server
 
 				if ( authenticatedClient.ClientConnectionId != clientId )
 				{
-					Send( authenticatedClient.ClientConnectionId, new ForcedLogout()
+					operations.Send( authenticatedClient.ClientConnectionId, new ForcedLogout()
 					{
 						Reason = ForcedLogoutReason.ConnectionTakeOver
 					} );
@@ -57,7 +57,7 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Server
 				authenticatedClient.LoginToken = message.LoginToken;
 			}
 
-			Send( clientId, new LoginResponse()
+			operations.Send( clientId, new LoginResponse()
 			{
 				LoginResult = LoginResult.OK
 			} );
@@ -71,7 +71,7 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Server
 
 			if( client == null )
 			{
-				Send( clientId, new SpawnResponse()
+				operations.Send( clientId, new SpawnResponse()
 				{
 					Result = SpawnRequestResult.AuthenticationFailure,
 					ControlledUnitId = -1
@@ -91,6 +91,7 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Server
 					ControllingUserId = client.UserId,
 					Position = message.SpawnLocation,
 					Rotation = Quaternion.identity,
+					MaxSpeedMetersPerSec = configuration.DefaultMaxUnitSpeed
 				};
 
 				var serverUnitView = UnityEngine.Object.Instantiate(
@@ -108,10 +109,34 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Server
 				runtimeData.Units[ controlledUnit.UnitId ] = ( controlledUnit, serverUnitView );
 			}
 
-			Send( clientId, new SpawnResponse()
+			operations.Send( clientId, new SpawnResponse()
 			{
 				Result = SpawnRequestResult.Success,
 				ControlledUnitId = controlledUnit.UnitId
+			} );
+		}
+
+		private void HandleNavigateToPositionRequest( int clientConnectionId, NavigateToPositionRequest message )
+		{
+			var user = operations.GetAuthenticatedClient( clientConnectionId );
+
+			var controlledUnit = operations.GetControlledUnit( user.UserId );
+
+			if ( controlledUnit != null )
+			{
+				controlledUnit.Destination = message.Destination;
+
+				operations.Send( clientConnectionId, new NavigateToPositionResponse()
+				{
+					Result = NavigateToPositionResult.Success
+				} ) ;
+
+				return;
+			}
+
+			operations.Send( clientConnectionId, new NavigateToPositionResponse()
+			{
+				Result = NavigateToPositionResult.InvalidOperation
 			} );
 		}
 

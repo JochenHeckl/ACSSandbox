@@ -742,6 +742,7 @@ MonoBehaviour:
   - {fileID: -3808965365924816112}
   m_AtlasTextureIndex: 0
   m_IsMultiAtlasTexturesEnabled: 0
+  m_ClearDynamicDataOnBuild: 0
   m_UsedGlyphRects:
   - m_X: 0
     m_Y: 0

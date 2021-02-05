@@ -6,10 +6,12 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Client
 	public class WorldCamera : MonoBehaviour, IWorldCamera
 	{
 		public Camera activeCamera;
-		public CinemachineVirtualCamera virtualCamera;
+		public CinemachineVirtualCameraBase virtualCamera;
 
 		public Camera ActiveCamera => activeCamera;
-		
+
+		public bool IsActive => gameObject.activeSelf;
+
 		public void SetActive( bool active )
 		{
 			gameObject.SetActive( active );

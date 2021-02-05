@@ -10,8 +10,6 @@ using de.JochenHeckl.Unity.IoCLight;
 using de.JochenHeckl.Unity.ACSSandbox.Common;
 using de.JochenHeckl.Unity.ACSSandbox.Protocol;
 
-
-
 namespace de.JochenHeckl.Unity.ACSSandbox.Client
 {
 	public class BootstrapClient : BootstrapBase, IContextResolver
@@ -53,6 +51,7 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Client
 			Container.Register<ClientNetworkMessageDispatcher>().SingleInstance();
 
 			Container.Register<ClientContextSystem>().SingleInstance();
+			Container.Register<UserInputSystem>().SingleInstance();
 
 			Container.Register<ClientOperations>().As<IClientOperations>().SingleInstance();
 

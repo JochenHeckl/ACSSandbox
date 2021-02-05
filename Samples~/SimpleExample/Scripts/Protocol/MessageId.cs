@@ -13,6 +13,7 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Protocol
 				(3, typeof( LoginRequest )),
 				(5, typeof( ServerDataRequest )),
 				(8, typeof( SpawnRequest )),
+				(11, typeof( NavigateToPositionRequest ))
 			};
 
 		public static (byte messageId, Type messageType)[] ServerToClientMessageIds => new (byte messageId, Type messageType)[]
@@ -23,6 +24,7 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Protocol
 				(7, typeof( SpawnResponse ) ),
 				(9, typeof( WorldState )),
 				(10, typeof( UnitSync )),
+				(12, typeof( NavigateToPositionResponse ))
 			};
 	}
 }

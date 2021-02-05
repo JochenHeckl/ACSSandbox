@@ -37,9 +37,8 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Server
 			// we probably have to check for availability of services, register the server etc.
 
 			runtimeData.WorldId = configuration.ServerWorldId;
-			runtimeData.World = UnityEngine.Object.Instantiate(
-				resources.GetWorld( configuration.ServerWorldId ),
-				runtimeData.WorldRoot );
+			runtimeData.World = Object.Instantiate( resources.GetWorld( configuration.ServerWorldId ), runtimeData.WorldRoot );
+			runtimeData.World.gameObject.RecursiveMoveToLayer( runtimeData.WorldRoot.gameObject.layer );
 
 			runtimeData.World.gameObject.layer = runtimeData.WorldRoot.gameObject.layer;
 

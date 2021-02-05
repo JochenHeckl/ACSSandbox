@@ -12,6 +12,8 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Common
 
 		public Camera ActiveCamera { get; set; }
 
+		public int WorldLayer => gameObject.layer;
+
 		public Transform unitRoot;
 		public Transform UnitRoot => unitRoot;
 	}
