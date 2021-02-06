@@ -1,6 +1,6 @@
 {
     "name": "de.JochenHeckl.Unity.ACSSandbox.Protocol",
-    "rootNamespace": "",
+    "rootNamespace": "de.JochenHeckl.Unity.ACSSandbox.Protocol",
     "references": [
         "GUID:e4d3d6442692c2f439ea98ae110d0ad9"
     ],

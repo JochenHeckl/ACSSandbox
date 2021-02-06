@@ -1,6 +1,6 @@
 {
     "name": "de.JochenHeckl.Unity.ACSSandbox.Editor",
-    "rootNamespace": "",
+    "rootNamespace": "de.JochenHeckl.Unity.ACSSandbox.Editor",
     "references": [],
     "includePlatforms": [
         "Editor"

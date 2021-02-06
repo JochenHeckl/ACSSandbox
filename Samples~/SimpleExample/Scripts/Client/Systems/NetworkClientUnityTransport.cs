@@ -8,6 +8,7 @@ using de.JochenHeckl.Unity.ACSSandbox.Common;
 using Unity.Collections;
 using Unity.Jobs;
 using Unity.Networking.Transport;
+using Unity.Networking.Transport.Error;
 using Unity.Networking.Transport.Utilities;
 
 using UnityEngine;
@@ -86,9 +87,14 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Client
 
 				processingJobHandle.Complete();
 
-				var writer = networkDriver.BeginSend( networkConnection );
 
-				if ( writer.IsCreated )
+				var beginSendResult = (StatusCode)networkDriver.BeginSend(
+					pipeline,
+					networkConnection,
+					out DataStreamWriter writer,
+					message.Length );
+
+				if ( beginSendResult == StatusCode.Success )
 				{
 
 					using ( var nativeMessage = new NativeArray<byte>( message, Allocator.Temp ) )
@@ -97,6 +103,10 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Client
 					}
 
 					networkDriver.EndSend( writer );
+				}
+				else
+				{
+					throw new InvalidOperationException( $"Failed to send network message. ErrorCode {(StatusCode) beginSendResult}" );
 				}
 			}
 		}

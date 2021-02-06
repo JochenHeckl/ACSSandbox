@@ -91,7 +91,7 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Server
 					ControllingUserId = client.UserId,
 					Position = message.SpawnLocation,
 					Rotation = Quaternion.identity,
-					MaxSpeedMetersPerSec = configuration.DefaultMaxUnitSpeed
+					MaxSpeedMetersPerSec = configuration.MaxUnitSpeed
 				};
 
 				var serverUnitView = UnityEngine.Object.Instantiate(

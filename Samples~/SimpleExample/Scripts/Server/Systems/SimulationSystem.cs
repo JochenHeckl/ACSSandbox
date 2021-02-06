@@ -1,20 +1,20 @@
 ﻿using System;
 
+using UnityEngine;
+
 namespace de.JochenHeckl.Unity.ACSSandbox.Server
 {
 	internal class SimulationSystem : IServerSystem
 	{
-		private readonly ServerConfiguration configuration;
+		private readonly IServerConfiguration configuration;
 		private readonly IServerRuntimeData runtimeData;
 
-		private float timeLapse;
-
-		public SimulationSystem( ServerConfiguration configurationIn, IServerRuntimeData runtimeDataIn )
+		private float targetIntegrationTimeSec;
+		
+		public SimulationSystem( IServerConfiguration configurationIn, IServerRuntimeData runtimeDataIn )
 		{
 			configuration = configurationIn;
 			runtimeData = runtimeDataIn;
-
-			timeLapse = configuration.DefaultTimeLapse;
 		}
 
 		public void Initialize()
@@ -29,21 +29,40 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Server
 
 		public void Update( float deltaTimeSec )
 		{
-			var deltaIntegrationTime = deltaTimeSec * timeLapse;
-			var targetIntegrationTime = runtimeData.ServerIntegrationTimeSec + deltaIntegrationTime;
-			var integrationTimeStepSec = configuration.IntegrationTimeStepSec;
-
-			while ( runtimeData.ServerIntegrationTimeSec < targetIntegrationTime )
+			var deltaIntegrationTimeSec = deltaTimeSec * configuration.IntegrationTimeLapse; 
+			targetIntegrationTimeSec += deltaIntegrationTimeSec;
+			
+			while ( runtimeData.ServerIntegrationTimeSec < targetIntegrationTimeSec )
 			{
-				UpdateSimulation( integrationTimeStepSec );
+				runtimeData.ServerIntegrationTimeSec += configuration.IntegrationTimeStepSec;
 
-				runtimeData.ServerIntegrationTimeSec += integrationTimeStepSec;
+				SimulateUnits();
 			}
 		}
 
-		private void UpdateSimulation( float integrationTimeStepSec )
+		private void SimulateUnits()
 		{
-			
+			foreach ( var unit in runtimeData.Units.Values )
+			{
+				AdvanceUnitTowardsDestination( unit.unitData );
+			}
+		}
+
+		private void AdvanceUnitTowardsDestination( IServerUnitData unitData )
+		{
+			var maxDeltaPosition = unitData.MaxSpeedMetersPerSec * configuration.IntegrationTimeStepSec;
+
+			var towardsDestination = unitData.Destination - unitData.Position;
+			var distanceToDestination = Vector3.Magnitude( towardsDestination );
+
+			if ( distanceToDestination < maxDeltaPosition )
+			{
+				unitData.Position = unitData.Destination;
+			}
+			else
+			{
+				unitData.Position += towardsDestination * (maxDeltaPosition / distanceToDestination);
+			}
 		}
 	}
 }

@@ -48,8 +48,6 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Client
 						{
 							Destination = rayCastHit.point
 						} );
-
-						Debug.Log( rayCastHit.point );
 					}
 				}
 			}

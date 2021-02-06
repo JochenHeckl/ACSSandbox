@@ -5,6 +5,7 @@ using System.Linq;
 using Unity.Collections;
 using Unity.Jobs;
 using Unity.Networking.Transport;
+using Unity.Networking.Transport.Error;
 using Unity.Networking.Transport.Utilities;
 
 using UnityEngine;
@@ -195,9 +196,21 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Server
 				{
 					foreach ( var connection in adressees )
 					{
-						var writer = networkDriver.BeginSend( connection, message.Length );
-						writer.WriteBytes( messageNative );
-						networkDriver.EndSend( writer );
+						var beginSendResult = (StatusCode) networkDriver.BeginSend(
+							pipeline,
+							connection,
+							out DataStreamWriter writer,
+							message.Length );
+
+						if ( beginSendResult == StatusCode.Success )
+						{
+							writer.WriteBytes( messageNative );
+							networkDriver.EndSend( writer );
+						}
+						else
+						{
+							throw new InvalidOperationException( $"Failed to send network message clients. ErrorCode{(StatusCode) beginSendResult}" );
+						}
 					}
 				}
 			}

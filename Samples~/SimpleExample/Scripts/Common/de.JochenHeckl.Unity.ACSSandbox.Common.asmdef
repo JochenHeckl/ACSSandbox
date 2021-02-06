@@ -1,6 +1,6 @@
 {
     "name": "de.JochenHeckl.Unity.ACSSandbox.Common",
-    "rootNamespace": "",
+    "rootNamespace": "de.JochenHeckl.Unity.ACSSandbox.Common",
     "references": [
         "GUID:1ac1bd0cf575cfe4b8d295c36f1e0edd",
         "GUID:e31f064e28b930a429ef69e965582cf8"

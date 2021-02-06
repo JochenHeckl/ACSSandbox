@@ -2,15 +2,15 @@
 
 namespace de.JochenHeckl.Unity.ACSSandbox.Server
 {
-	internal class ServerConfiguration
+	internal class ServerConfiguration : IServerConfiguration
 	{
 		public Guid ServerWorldId { get; set; }
 
 		public int ServerPort { get; set; }
 		public float IntegrationTimeStepSec { get; set; }
-		public float UnitDataSyncIntervalSec { get; internal set; }
-		public float DefaultTimeLapse { get; set; }
+		public float IntegrationTimeLapse { get; set; }
+		public float UnitDataSyncIntervalSec { get; set; }
 		public int MaxMessageSizeByte { get; set; }
-		public float DefaultMaxUnitSpeed { get; internal set; }
+		public float MaxUnitSpeed { get; set; }
 	}
 }

@@ -18,7 +18,6 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Server
 		private readonly IMessageDispatcher messageDispatcher;
 		private readonly INetworkServer networkServer;
 
-		private float targetIntegrationTimeSec;
 		private float nextUnitDataSyncTimeSec;
 
 		public SimulateWorld(
@@ -43,9 +42,7 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Server
 			messageDispatcher.RegisterHandler<SpawnRequest>( HandleSpawnRequest );
 			messageDispatcher.RegisterHandler<NavigateToPositionRequest>( HandleNavigateToPositionRequest );
 
-			targetIntegrationTimeSec = runtimeData.ServerIntegrationTimeSec;
-			nextUnitDataSyncTimeSec = runtimeData.ServerIntegrationTimeSec;
-			nextUnitDataSyncTimeSec = runtimeData.ServerIntegrationTimeSec;
+			nextUnitDataSyncTimeSec = Time.realtimeSinceStartup;
 		}
 
 		public void LeaveContext( IContextContainer contextContainer )
@@ -57,17 +54,7 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Server
 
 		public void Update( IContextContainer contextContainer, float deltaTimeSec )
 		{
-			// test for conditions to shut down the server
-			targetIntegrationTimeSec += deltaTimeSec;
-
-			while ( runtimeData.ServerIntegrationTimeSec < targetIntegrationTimeSec )
-			{
-				runtimeData.ServerIntegrationTimeSec += configuration.IntegrationTimeStepSec;
-
-				SimulateUnits( runtimeData.ServerIntegrationTimeSec, configuration.IntegrationTimeStepSec );
-			}
-
-			if ( runtimeData.ServerIntegrationTimeSec > nextUnitDataSyncTimeSec )
+			if ( nextUnitDataSyncTimeSec < Time.realtimeSinceStartup )
 			{
 				nextUnitDataSyncTimeSec += configuration.UnitDataSyncIntervalSec;
 
@@ -76,34 +63,8 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Server
 
 		}
 
-		private void SimulateUnits( float serverTimeSec, float deltaTimeSec )
-		{
-			foreach( var unit in runtimeData.Units.Values )
-			{
-				AdvanceTowardsDestination( unit.unitData, deltaTimeSec );
-			}
-		}
-
-		private void AdvanceTowardsDestination( IServerUnitData unitData, float deltaTimeSec )
-		{
-			var maxDeltaPosition = unitData.MaxSpeedMetersPerSec * deltaTimeSec;
-
-			var towardsDestination = unitData.Destination - unitData.Position;
-			var distanceToDestination = Vector3.Magnitude( towardsDestination );
-
-			if( distanceToDestination < maxDeltaPosition )
-			{
-				unitData.Position = unitData.Destination;
-			}
-			else
-			{
-				unitData.Position += towardsDestination * (maxDeltaPosition / distanceToDestination);
-			}
-		}
-
 		private void SyncUnits()
 		{
-
 			var authenticatedClientIds = runtimeData.AuthenticatedClients
 				.Select( x => x.ClientConnectionId )
 				.ToArray();

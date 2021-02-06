@@ -3,9 +3,9 @@
 
   "ServerPort": 1337,
   "IntegrationTimeStepSec": 0.01,
-  "UnitDataSyncIntervalSec": 0.05,
+  "IntegrationTimeLapse": 1.0,
+  "UnitDataSyncIntervalSec": 0.02,
 
-  "DefaultTimeLapse": 1.0,
   "MaxMessageSizeByte": 1024,
-  "DefaultMaxUnitSpeed" : 3.0
+  "MaxUnitSpeed": 3.0
 }
