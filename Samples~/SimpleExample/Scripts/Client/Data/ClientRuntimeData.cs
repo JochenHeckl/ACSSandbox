@@ -3,7 +3,7 @@
 using de.JochenHeckl.Unity.ACSSandbox.Common;
 using System.Collections.Generic;
 
-namespace de.JochenHeckl.Unity.ACSSandbox.Client
+namespace de.JochenHeckl.Unity.ACSSandbox.Example.Client
 {
 	internal class ClientRuntimeData : IClientRuntimeData
 	{
@@ -16,6 +16,10 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Client
 		public RectTransform UserInterfaceRoot { get; set; }
 
 		public ViewModels ViewModels { get; } = new ViewModels();
+
+		public string ServerAddress { get; set; }
+		public int ServerPort { get; set; }
+
 		public PingData PingData { get; set; }
 		public ServerData ServerData { get; set; }
 		public bool IsAuthenticated { get; set; }

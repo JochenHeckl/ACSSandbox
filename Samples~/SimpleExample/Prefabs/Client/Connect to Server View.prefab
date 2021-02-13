@@ -1669,7 +1669,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 8765917055133194591}
-        m_TargetAssemblyTypeName: de.JochenHeckl.Unity.ACSSandbox.Client.LoginView,
+        m_TargetAssemblyTypeName: de.JochenHeckl.Unity.ACSSandbox.Example.Client.LoginView,
           ACSSandbox.Client
         m_MethodName: HandleLoginButtonClicked
         m_Mode: 1
@@ -1846,7 +1846,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 8765917055133194591}
-        m_TargetAssemblyTypeName: de.JochenHeckl.Unity.ACSSandbox.Client.LoginView,
+        m_TargetAssemblyTypeName: de.JochenHeckl.Unity.ACSSandbox.Example.Client.LoginView,
           ACSSandbox.Client
         m_MethodName: WellKnownHostChanged
         m_Mode: 0
@@ -2208,8 +2208,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dataSourceType:
-    assemblyQualifiedName: de.JochenHeckl.Unity.ACSSandbox.Client.ConnectToServerViewModel,
-      de.JochenHeckl.Unity.ACSSandbox.Client, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+    assemblyQualifiedName: de.JochenHeckl.Unity.ACSSandbox.Example.Client.ConnectToServerViewModel,
+      de.JochenHeckl.Unity.ACSSandbox.Example.Client, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
   condenseValidBuilders: 0
   fadeInTimeSec: 0.5
   serverAddress: {fileID: 5649294115352453119}

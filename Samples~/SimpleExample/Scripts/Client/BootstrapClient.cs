@@ -10,7 +10,7 @@ using de.JochenHeckl.Unity.IoCLight;
 using de.JochenHeckl.Unity.ACSSandbox.Common;
 using de.JochenHeckl.Unity.ACSSandbox.Protocol;
 
-namespace de.JochenHeckl.Unity.ACSSandbox.Client
+namespace de.JochenHeckl.Unity.ACSSandbox.Example.Client
 {
 	public class BootstrapClient : BootstrapBase, IContextResolver
 	{
@@ -50,6 +50,7 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Client
 			Container.Register<NetworkClientUnityTransport>().SingleInstance();
 			Container.Register<ClientNetworkMessageDispatcher>().SingleInstance();
 
+			Container.Register<NetworkClientSystem>().SingleInstance();
 			Container.Register<ClientContextSystem>().SingleInstance();
 			Container.Register<UserInputSystem>().SingleInstance();
 
@@ -64,8 +65,6 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Client
 		{
 			var configuration = Container.Resolve<ClientConfiguration>();
 			Application.targetFrameRate = configuration.FPSLimit;
-
-			var contextSystem = Container.Resolve<IContextContainer>();
 
 			clientSystems = Container.ResolveAll<IClientSystem>();
 

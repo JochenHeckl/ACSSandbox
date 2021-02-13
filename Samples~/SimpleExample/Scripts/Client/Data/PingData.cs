@@ -1,4 +1,4 @@
-﻿namespace de.JochenHeckl.Unity.ACSSandbox.Client
+﻿namespace de.JochenHeckl.Unity.ACSSandbox.Example.Client
 {
 	class PingData
 	{

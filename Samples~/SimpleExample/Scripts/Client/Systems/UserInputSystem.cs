@@ -2,7 +2,7 @@ using UnityEngine;
 
 using de.JochenHeckl.Unity.ACSSandbox.Protocol.ClientToServer;
 
-namespace de.JochenHeckl.Unity.ACSSandbox.Client
+namespace de.JochenHeckl.Unity.ACSSandbox.Example.Client
 {
 	internal class UserInputSystem : IClientSystem
 	{

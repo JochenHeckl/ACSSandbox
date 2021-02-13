@@ -4,7 +4,7 @@ using UnityEngine;
 
 using de.JochenHeckl.Unity.ACSSandbox.Common;
 
-namespace de.JochenHeckl.Unity.ACSSandbox.Client
+namespace de.JochenHeckl.Unity.ACSSandbox.Example.Client
 {
 	internal interface IClientResources
 	{

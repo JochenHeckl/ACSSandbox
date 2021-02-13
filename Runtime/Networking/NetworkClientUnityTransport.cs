@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 
-using de.JochenHeckl.Unity.ACSSandbox.Common;
-
 using Unity.Collections;
 using Unity.Jobs;
 using Unity.Networking.Transport;
@@ -13,9 +11,9 @@ using Unity.Networking.Transport.Utilities;
 
 using UnityEngine;
 
-namespace de.JochenHeckl.Unity.ACSSandbox.Client
+namespace de.JochenHeckl.Unity.ACSSandbox
 {
-	internal class NetworkClientUnityTransport : INetworkClient
+	public class NetworkClientUnityTransport : INetworkClient
 	{
 		public bool IsConnected { get; private set; }
 		private Queue<byte[]> inboundMessages = new Queue<byte[]>();
@@ -25,58 +23,8 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Client
 		private NetworkConnection networkConnection;
 		private JobHandle processingJobHandle = new JobHandle();
 
-		private ClientConfiguration configuration;
-		private IClientRuntimeData runtimeData;
-
 		private string serverAddress;
 		private int serverPort;
-
-		private float nextNetworkConnectionRetrySec;
-
-		public NetworkClientUnityTransport(
-			ClientConfiguration configurationIn,
-			IClientRuntimeData runtimeDataIn )
-		{
-			configuration = configurationIn;
-			runtimeData = runtimeDataIn;
-		}
-
-		public void Initialize()
-		{
-			if ( configuration.AutoConnect )
-			{
-				if ( string.IsNullOrEmpty( configuration.AutoConnectServerAddress ) || (configuration.AutoConnectServerPort == 0) )
-				{
-					throw new InvalidOperationException( "Auto connect was requested, but auto connect server was not configured properly." );
-				}
-
-				Connect( configuration.AutoConnectServerAddress, configuration.AutoConnectServerPort );
-				nextNetworkConnectionRetrySec = Time.realtimeSinceStartup + configuration.NetworkConnectionRetryIntervalSec;
-			}
-		}
-
-		public void Shutdown()
-		{
-			ResetConnection();
-		}
-
-		public void Update( float deltaTime )
-		{
-			if ( !networkDriver.IsCreated )
-			{
-				return;
-			}
-
-			ProcessNetworkEvents();
-
-			if ( !IsConnected && (runtimeData.TimeSec > nextNetworkConnectionRetrySec) )
-			{
-				Debug.Log( "reconnecting to server..." );
-
-				ResetConnection();
-				Connect( serverAddress, serverPort );
-			}
-		}
 
 		public void Send( byte[] message )
 		{
@@ -131,8 +79,6 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Client
 			{
 				serverAddress = serverAddressIn;
 				serverPort = serverPortIn;
-
-				nextNetworkConnectionRetrySec = runtimeData.TimeSec + configuration.NetworkConnectionRetryIntervalSec;
 			}
 
 			var serverIp = Dns.GetHostEntry( serverAddress ).AddressList
@@ -170,13 +116,15 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Client
 			IsConnected = false;
 		}
 
-		private void ProcessNetworkEvents()
+		public void UpdateProcessing()
 		{
 			processingJobHandle.Complete();
 
-			ProcessNetworkEvents( networkDriver, networkConnection );
-
-			processingJobHandle = networkDriver.ScheduleUpdate();
+			if ( networkDriver.IsCreated )
+			{
+				ProcessNetworkEvents( networkDriver, networkConnection );
+				processingJobHandle = networkDriver.ScheduleUpdate();
+			}
 		}
 
 		private void ProcessNetworkEvents( NetworkDriver networkDriver, NetworkConnection networkConnection )

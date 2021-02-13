@@ -1,9 +1,10 @@
 ﻿
+using de.JochenHeckl.Unity.ACSSandbox;
 using de.JochenHeckl.Unity.ACSSandbox.Common;
 using de.JochenHeckl.Unity.ACSSandbox.Protocol.ClientToServer;
 using de.JochenHeckl.Unity.ACSSandbox.Protocol.ServerToClient;
 
-namespace de.JochenHeckl.Unity.ACSSandbox.Client
+namespace de.JochenHeckl.Unity.ACSSandbox.Example.Client
 {
 	internal class PingSystem : IClientSystem
 	{

@@ -5,7 +5,7 @@ using de.JochenHeckl.Unity.ACSSandbox.Protocol.ServerToClient;
 
 using UnityEditor;
 
-namespace de.JochenHeckl.Unity.ACSSandbox.Client
+namespace de.JochenHeckl.Unity.ACSSandbox.Example.Client
 {
 	internal class ClientOperations : IClientOperations
 	{

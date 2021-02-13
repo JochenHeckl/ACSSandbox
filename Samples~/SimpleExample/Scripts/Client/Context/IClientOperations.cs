@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 using de.JochenHeckl.Unity.ACSSandbox.Protocol.ServerToClient;
 
-namespace de.JochenHeckl.Unity.ACSSandbox.Client
+namespace de.JochenHeckl.Unity.ACSSandbox.Example.Client
 {
 	interface IClientOperations
 	{

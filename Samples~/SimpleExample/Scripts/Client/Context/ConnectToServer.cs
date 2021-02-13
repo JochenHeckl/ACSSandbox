@@ -10,7 +10,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace de.JochenHeckl.Unity.ACSSandbox.Client
+namespace de.JochenHeckl.Unity.ACSSandbox.Example.Client
 {
 	internal partial class ConnectToServer : IContext
 	{

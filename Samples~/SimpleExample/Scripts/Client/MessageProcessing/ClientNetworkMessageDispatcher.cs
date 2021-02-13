@@ -1,15 +1,10 @@
 ﻿using System;
+using System.IO;
 
 using de.JochenHeckl.Unity.ACSSandbox.Common;
-using System.Diagnostics;
-using System.Collections.Generic;
-using UnityEngine;
-
-using Debug = UnityEngine.Debug;
-using System.IO;
 using de.JochenHeckl.Unity.ACSSandbox.Protocol;
 
-namespace de.JochenHeckl.Unity.ACSSandbox.Client
+namespace de.JochenHeckl.Unity.ACSSandbox.Example.Client
 {
 	internal class ClientNetworkMessageDispatcher : TypeMapMessageDispatcher, IClientSystem
 	{

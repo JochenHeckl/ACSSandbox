@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using Cinemachine;
 
-namespace de.JochenHeckl.Unity.ACSSandbox.Client
+namespace de.JochenHeckl.Unity.ACSSandbox.Example.Client
 {
 	public class WorldCamera : MonoBehaviour, IWorldCamera
 	{

@@ -1,6 +1,6 @@
 ﻿using de.JochenHeckl.Unity.DataBinding;
 
-namespace de.JochenHeckl.Unity.ACSSandbox.Client
+namespace de.JochenHeckl.Unity.ACSSandbox.Example.Client
 {
 	public class ClientUnitViewModel : ViewModelBase
 	{

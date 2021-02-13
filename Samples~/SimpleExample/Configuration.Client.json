@@ -1,12 +1,12 @@
 {
   "FPSLimit": 165,
-
-  "AutoConnect" : false,
-  "AutoConnectServerAddress": "localhost",
-  "AutoConnectServerPort": 1337,
-
-  "WellKnownServers":
-  [
+  "NetworkConfiguration": {
+    "AutoConnect": false,
+    "AutoConnectServerAddress": "localhost",
+    "AutoConnectServerPort": 1337,
+    "NetworkConnectionRetryIntervalSec": 2
+  },
+  "WellKnownServers": [
     {
       "DisplayName": "localhost",
       "ServerAddress": "localhost",
@@ -18,7 +18,5 @@
       "ServerPort": "1337"
     }
   ],
-
-  "NetworkConnectionRetryIntervalSec" : 2,
-  "NetworkConnectionTimeoutSec" : 5
+  "NetworkConnectionTimeoutSec": 5
 }

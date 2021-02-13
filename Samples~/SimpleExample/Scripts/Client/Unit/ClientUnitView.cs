@@ -2,7 +2,7 @@ using de.JochenHeckl.Unity.ACSSandbox.Common;
 
 using UnityEngine;
 
-namespace de.JochenHeckl.Unity.ACSSandbox.Client
+namespace de.JochenHeckl.Unity.ACSSandbox.Example.Client
 {
 	public class ClientUnitView : UnitView
 	{

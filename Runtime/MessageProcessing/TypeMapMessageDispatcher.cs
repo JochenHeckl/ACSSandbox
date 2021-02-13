@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace de.JochenHeckl.Unity.ACSSandbox.Client
+namespace de.JochenHeckl.Unity.ACSSandbox
 {
 	public class TypeMapMessageDispatcher : IMessageDispatcher
 	{

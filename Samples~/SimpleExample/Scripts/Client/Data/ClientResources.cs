@@ -5,7 +5,7 @@ using UnityEngine;
 
 using de.JochenHeckl.Unity.ACSSandbox.Common;
 
-namespace de.JochenHeckl.Unity.ACSSandbox.Client
+namespace de.JochenHeckl.Unity.ACSSandbox.Example.Client
 {
 	[CreateAssetMenu( fileName = "ClientResources", menuName = "ACS Sandbox/ClientResources", order = 1 )]
 	public class ClientResources : ScriptableObject, IClientResources

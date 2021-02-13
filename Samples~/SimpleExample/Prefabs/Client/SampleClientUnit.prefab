@@ -46,8 +46,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dataSourceType:
-    assemblyQualifiedName: de.JochenHeckl.Unity.ACSSandbox.Client.ClientUnitViewModel,
-      de.JochenHeckl.Unity.ACSSandbox.Client, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+    assemblyQualifiedName: de.JochenHeckl.Unity.ACSSandbox.Example.Client.ClientUnitViewModel,
+      de.JochenHeckl.Unity.ACSSandbox.Example.Client, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
   condenseValidBuilders: 1
   unitId: 0
   unitTypeId: 1
