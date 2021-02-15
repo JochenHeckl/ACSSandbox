@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace de.JochenHeckl.Unity.ACSSandbox.Example.Client
 {
-	internal class InteractWithWorld : IContext
+	internal class InteractWithWorld : IState
 	{
 		private ContextUIView contextUI;
 
@@ -31,7 +31,7 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Example.Client
 			runtimeData = runtimeDataIn;
 		}
 
-		public void EnterContext( IContextContainer contextContainer )
+		public void EnterState( IStateMachine contextContainer )
 		{
 			operations.RegisterHandler<SpawnResponse>( HandleSpawnResponse );
 			operations.RegisterHandler<NavigateToPositionResponse>( HandleNavigateToPositionResponse );
@@ -39,23 +39,23 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Example.Client
 			ShowContextUI();
 		}
 
-		public void LeaveContext( IContextContainer contextContainer )
+		public void LeaveState( IStateMachine contextContainer )
 		{
 			operations.DeregisterHandler<NavigateToPositionResponse>( HandleNavigateToPositionResponse );
 			operations.DeregisterHandler<SpawnResponse>( HandleSpawnResponse );
 		}
 
-		public void ActivateContext( IContextContainer contextContainer )
+		public void ActivateState( IStateMachine contextContainer )
 		{
 			ShowContextUI();
 		}
 
-		public void DeactivateContext( IContextContainer contextContainer )
+		public void DeactivateState( IStateMachine contextContainer )
 		{
 			contextUI.Hide();
 		}
 
-		public void Update( IContextContainer contextContainer, float deltaTimeSec )
+		public void UpdateState( IStateMachine contextContainer, float deltaTimeSec )
 		{
 			if ( !worldDataLoaded )
 			{
@@ -109,14 +109,22 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Example.Client
 
 		private void HandleSpawnResponse( SpawnResponse message )
 		{
-			runtimeData.ControlledUnitId = message.ControlledUnitId;
-
-			// spawnRequestSuccess = message.Result == SpawnRequestResult.Success;
+			if ( message.Result == SpawnRequestResult.Success )
+			{
+				runtimeData.ControlledUnitId = message.ControlledUnitId;
+			}
+			else
+			{
+				runtimeData.ControlledUnitId = Constants.InvalidUnitId;
+			}
 		}
 
 		private void HandleNavigateToPositionResponse( NavigateToPositionResponse message )
 		{
-
+			if( message.Result != NavigateToPositionResult.Success )
+			{
+				// TODO Update ping visualization
+			}
 		}
 	}
 }

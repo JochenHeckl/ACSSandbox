@@ -7,7 +7,7 @@ using UnityEditor;
 
 namespace de.JochenHeckl.Unity.ACSSandbox.Example.Client
 {
-	internal class ClientOperations : IClientOperations
+	internal partial class ClientOperations : IClientOperations
 	{
 		private readonly ClientConfiguration configuration;
 		private readonly IClientResources resources;
@@ -30,6 +30,10 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Example.Client
 			networkClient = networkClientIn;
 			messageSerializer = messageSerializerIn;
 			messageDispatcher = messageDispatcherIn;
+
+			RegisterHandler<UnitSync>( HandleUnitSync );
+			RegisterHandler<LoginResponse>( HandleLoginResonse );
+			RegisterHandler<ServerDataResponse>( HandleServerDataResponse );
 		}
 
 		public void RegisterHandler<MessageType>( Action<MessageType> handler ) where MessageType : class

@@ -5,37 +5,36 @@ using de.JochenHeckl.Unity.ACSSandbox.Common;
 
 namespace de.JochenHeckl.Unity.ACSSandbox.Example.Client
 {
-	internal class ClientContextSystem : IClientSystem, IContextContainer
+	internal class ClientContextSystem : IClientSystem, IStateMachine
 	{
-		private readonly IContextResolver contextResolver;
-		private readonly Stack<IContext> contextStack = new Stack<IContext>();
+		private readonly Stack<IState> contextStack = new Stack<IState>();
 
-		public IContext ActiveContext { get { return contextStack.Count > 0  ? contextStack.Peek() : null; } }
-
-		public ClientContextSystem( IContextResolver contextResolverIn )
+		public IState ActiveState { get { return contextStack.Count > 0  ? contextStack.Peek() : null; } }
+		public IStateResolver StateResolver { get; private set; }
+		public ClientContextSystem( IStateResolver contextResolverIn )
 		{
-			contextResolver = contextResolverIn;
+			StateResolver = contextResolverIn;
 		}
 
 		public void Initialize()
 		{
-			PushContext( contextResolver.Resolve<StartupClient>() );
+			PushState( StateResolver.Resolve<StartupClient>() );
 		}
 
 		public void Shutdown()
 		{
 			while( contextStack.Count > 0 )
 			{
-				contextStack.Pop().LeaveContext( this );
+				contextStack.Pop().LeaveState( this );
 			}
 		}
 
 		public void Update( float deltaTimeSec )
 		{
-			ActiveContext?.Update( this, deltaTimeSec );
+			ActiveState?.UpdateState( this, deltaTimeSec );
 		}
 
-		public void SwitchToContext( IContext newContext )
+		public void SwitchToState( IState newContext )
 		{
 			if( newContext == null )
 			{
@@ -46,46 +45,36 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Example.Client
 			{
 				var currentContext = contextStack.Pop();
 
-				currentContext.DeactivateContext( this );
-				currentContext.LeaveContext( this );
+				currentContext.DeactivateState( this );
+				currentContext.LeaveState( this );
 			}
 
-			newContext?.EnterContext( this );
-			newContext?.ActivateContext( this );
+			newContext?.EnterState( this );
+			newContext?.ActivateState( this );
 
 			contextStack.Push( newContext );
 		}
 
-		public void PushContext( IContext context )
+		public void PushState( IState context )
 		{
-			ActiveContext?.DeactivateContext( this );
+			ActiveState?.DeactivateState( this );
 
 			contextStack.Push( context );
-			context.EnterContext( this );
+			context.EnterState( this );
 
-			ActiveContext?.ActivateContext( this );
+			ActiveState?.ActivateState( this );
 		}
 
-		public IContext PopContext()
+		public IState PopState()
 		{
-			ActiveContext?.DeactivateContext( this );
+			ActiveState?.DeactivateState( this );
 
 			var context = contextStack.Pop();
-			context.LeaveContext( this );
+			context.LeaveState( this );
 
-			ActiveContext?.ActivateContext( this );
+			ActiveState?.ActivateState( this );
 
 			return context;
-		}
-
-		public IContext Resolve<ContextType>()
-		{
-			return contextResolver.Resolve<ContextType>();
-		}
-
-		public IContext Resolve( Type contextType )
-		{
-			return contextResolver.Resolve( contextType );
 		}
 	}
 }

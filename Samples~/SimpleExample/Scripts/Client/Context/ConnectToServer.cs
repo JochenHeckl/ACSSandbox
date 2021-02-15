@@ -12,7 +12,7 @@ using UnityEngine.Events;
 
 namespace de.JochenHeckl.Unity.ACSSandbox.Example.Client
 {
-	internal partial class ConnectToServer : IContext
+	internal partial class ConnectToServer : IState
 	{
 		private float connectionTimeoutSec;
 		private bool isConnecting;
@@ -40,33 +40,26 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Example.Client
 			networkClient = networkClientIn;
 		}
 
-		public void EnterContext( IContextContainer contextContainer )
+		public void EnterState( IStateMachine contextContainer )
 		{
 			runtimeData.ServerData = null;
-
-			operations.RegisterHandler<LoginResponse>( HandleLoginResonse );
-			operations.RegisterHandler<UnitSync>( HandleUnitSync );
-			operations.RegisterHandler<ServerDataResponse>( HandleServerDataResponse );
 		}
 
-		public void LeaveContext( IContextContainer contextContainer )
+		public void LeaveState( IStateMachine contextContainer )
 		{
-			operations.DeregisterHandler<LoginResponse>( HandleLoginResonse );
-			operations.DeregisterHandler<UnitSync>( HandleUnitSync );
-			operations.DeregisterHandler<ServerDataResponse>( HandleServerDataResponse );
 		}
 
-		public void ActivateContext( IContextContainer contextContainer )
+		public void ActivateState( IStateMachine contextContainer )
 		{
 			ShowContextUI();
 		}
 
-		public void DeactivateContext( IContextContainer contextContainer )
+		public void DeactivateState( IStateMachine contextContainer )
 		{
 			HideContextUI();
 		}
 
-		public void Update( IContextContainer contextContainer, float deltaTimeSec )
+		public void UpdateState( IStateMachine contextContainer, float deltaTimeSec )
 		{
 			if ( TestConnectionEstablished() )
 			{
@@ -95,7 +88,7 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Example.Client
 
 			if ( runtimeData.IsAuthenticated && (runtimeData.ServerData != null) )
 			{
-				contextContainer.PushContext( contextContainer.Resolve<InteractWithWorld>() );
+				contextContainer.PushState( contextContainer.StateResolver.Resolve<InteractWithWorld>() );
 			}
 		}
 
@@ -196,21 +189,6 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Example.Client
 			loginViewModel.NotifyViewModelChanged();
 		}
 
-		public void HandleLoginResonse( LoginResponse message )
-		{
-			runtimeData.IsAuthenticated = message.LoginResult == LoginResult.OK;
-			operations.Send( new ServerDataRequest() );
-		}
-
-		public void HandleServerDataResponse( ServerDataResponse message )
-		{
-			runtimeData.ServerData = new ServerData()
-			{
-				UptimeSec = message.UptimeSec,
-				LoggedInUserCount = message.LoggedInUserCount,
-				WorldId = message.WorldId,
-			};
-		}
 
 		private void HandleLoginAction( string serverAddress, int serverPort )
 		{

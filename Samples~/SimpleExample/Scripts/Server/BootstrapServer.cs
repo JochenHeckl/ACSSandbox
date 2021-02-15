@@ -11,7 +11,7 @@ using UnityEngine;
 
 namespace de.JochenHeckl.Unity.ACSSandbox.Server
 {
-	public class BootstrapServer : BootstrapBase, IContextResolver
+	public class BootstrapServer : BootstrapBase, IStateResolver
 	{
 		private static readonly string configurationFileName = "Configuration.Server.json";
 
@@ -32,7 +32,7 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Server
 
 		public override void Compose()
 		{
-			Container.RegisterInstance( this ).As<IContextResolver>();
+			Container.RegisterInstance( this ).As<IStateResolver>();
 			Container.RegisterInstance( serverResources ).SingleInstance();
 
 			Container.RegisterInstance( ParseConfiguration() );
@@ -111,14 +111,14 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Server
 			}
 		}
 
-		public IContext Resolve<ContextType>()
+		public IState Resolve<ContextType>()
 		{
 			return Resolve( typeof( ContextType ) );
 		}
 
-		public IContext Resolve( System.Type contextType )
+		public IState Resolve( System.Type contextType )
 		{
-			return (IContext) Container.Resolve( contextType );
+			return (IState) Container.Resolve( contextType );
 		}
 
 		private ServerConfiguration ParseConfiguration()

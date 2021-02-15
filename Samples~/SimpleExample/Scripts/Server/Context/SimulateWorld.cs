@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace de.JochenHeckl.Unity.ACSSandbox.Server
 {
-	internal partial class SimulateWorld : IContext
+	internal partial class SimulateWorld : IState
 	{
 		private readonly ServerConfiguration configuration;
 		private readonly IServerOperations operations;
@@ -36,7 +36,7 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Server
 			messageDispatcher = messageDispatcherIn;
 		}
 
-		public void EnterContext( IContextContainer contextContainer )
+		public void EnterState( IStateMachine contextContainer )
 		{
 			messageDispatcher.RegisterHandler<LoginRequest>( HandleLoginRequest );
 			messageDispatcher.RegisterHandler<SpawnRequest>( HandleSpawnRequest );
@@ -45,14 +45,14 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Server
 			nextUnitDataSyncTimeSec = Time.realtimeSinceStartup;
 		}
 
-		public void LeaveContext( IContextContainer contextContainer )
+		public void LeaveState( IStateMachine contextContainer )
 		{
 			messageDispatcher.UnregisterHandler<NavigateToPositionRequest>( HandleNavigateToPositionRequest );
 			messageDispatcher.UnregisterHandler<SpawnRequest>( HandleSpawnRequest );
 			messageDispatcher.UnregisterHandler<LoginRequest>( HandleLoginRequest );
 		}
 
-		public void Update( IContextContainer contextContainer, float deltaTimeSec )
+		public void UpdateState( IStateMachine contextContainer, float deltaTimeSec )
 		{
 			if ( nextUnitDataSyncTimeSec < Time.realtimeSinceStartup )
 			{

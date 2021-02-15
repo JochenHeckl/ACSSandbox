@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace de.JochenHeckl.Unity.ACSSandbox.Server
 {
-	internal class StartupServer : IContext
+	internal class StartupServer : IState
 	{
 		private ServerConfiguration configuration;
 		private IServerResources resources;
@@ -31,7 +31,7 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Server
 			messageDispatcher = messageDispatcherIn;
 		}
 
-		public void EnterContext( IContextContainer contextContainer )
+		public void EnterState( IStateMachine contextContainer )
 		{
 			// more or less a placeholder for now.
 			// we probably have to check for availability of services, register the server etc.
@@ -46,19 +46,19 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Server
 			messageDispatcher.RegisterHandler<ServerDataRequest>( HandleGlobalServerDataRequest );
 		}
 
-		public void LeaveContext( IContextContainer contextContainer )
+		public void LeaveState( IStateMachine contextContainer )
 		{
 			messageDispatcher.UnregisterHandler<PingRequest>( HandlePingRequest );
 			messageDispatcher.UnregisterHandler<ServerDataRequest>( HandleGlobalServerDataRequest );
 		}
 
-		public void ActivateContext( IContextContainer contextContainer ) { }
+		public void ActivateState( IStateMachine contextContainer ) { }
 
-		public void DeactivateContext( IContextContainer contextContainer ) { }
+		public void DeactivateState( IStateMachine contextContainer ) { }
 
-		public void Update( IContextContainer contextContainer, float deltaTimeSec )
+		public void UpdateState( IStateMachine contextContainer, float deltaTimeSec )
 		{
-			contextContainer.PushContext( contextContainer.Resolve<SimulateWorld>() );
+			contextContainer.PushState( contextContainer.StateResolver.Resolve<SimulateWorld>() );
 		}
 
 		private void HandlePingRequest( int clientId, PingRequest message )

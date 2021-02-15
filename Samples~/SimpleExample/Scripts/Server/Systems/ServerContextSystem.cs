@@ -5,68 +5,58 @@ using de.JochenHeckl.Unity.ACSSandbox.Common;
 
 namespace de.JochenHeckl.Unity.ACSSandbox.Server
 {
-	internal class ServerContextSystem : IServerSystem, IContextContainer
+	internal class ServerContextSystem : IServerSystem, IStateMachine
 	{
-		private readonly IContextResolver contextResolver;
-		private readonly Stack<IContext> contextStack = new Stack<IContext>();
+		
+		private readonly Stack<IState> contextStack = new Stack<IState>();
 
-		public IContext ActiveContext { get { return contextStack.Peek(); } }
+		public IState ActiveState { get { return contextStack.Peek(); } }
+		public IStateResolver StateResolver { get; private set; }
 
-		public ServerContextSystem( IContextResolver contextResolverIn )
+		public ServerContextSystem( IStateResolver contextResolverIn )
 		{
-			contextResolver = contextResolverIn;
+			StateResolver = contextResolverIn;
 		}
 
 		public void Initialize()
 		{
-			SwitchToContext( contextResolver.Resolve<StartupServer>() );
+			SwitchToState( StateResolver.Resolve<StartupServer>() );
 		}
 
 		public void Shutdown()
 		{
-			SwitchToContext( null );
+			SwitchToState( null );
 		}
 
 		public void Update( float deltaTimeSec )
 		{
-			ActiveContext?.Update( this, deltaTimeSec );
+			ActiveState?.UpdateState( this, deltaTimeSec );
 		}
 
-		public void SwitchToContext( IContext newContext )
+		public void SwitchToState( IState newContext )
 		{
 			while ( contextStack.Count > 0 )
 			{
 				var currentContext = contextStack.Pop();
-				currentContext.LeaveContext( this );
+				currentContext.LeaveState( this );
 			}
 
-			newContext?.EnterContext( this );
+			newContext?.EnterState( this );
 			contextStack.Push( newContext );
 		}
 
-		public void PushContext( IContext context )
+		public void PushState( IState context )
 		{
 			contextStack.Push( context );
-			context.EnterContext( this );
+			context.EnterState( this );
 		}
 
-		public IContext PopContext()
+		public IState PopState()
 		{
 			var context = contextStack.Pop();
-			context.LeaveContext( this );
+			context.LeaveState( this );
 
 			return context;
 		}
-
-		public IContext Resolve<ContextType>()
-		{
-			return contextResolver.Resolve<ContextType>();
-		}
-
-		public IContext Resolve( Type contextType )
-		{
-			return contextResolver.Resolve( contextType );
-		}
-
 	}
 }

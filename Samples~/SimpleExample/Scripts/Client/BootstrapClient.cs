@@ -12,7 +12,7 @@ using de.JochenHeckl.Unity.ACSSandbox.Protocol;
 
 namespace de.JochenHeckl.Unity.ACSSandbox.Example.Client
 {
-	public class BootstrapClient : BootstrapBase, IContextResolver
+	public class BootstrapClient : BootstrapBase, IStateResolver
 	{
 		private static readonly string configurationFileName = "Configuration.Client.json";
 
@@ -30,7 +30,7 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Example.Client
 
 		public override void Compose()
 		{
-			Container.RegisterInstance( this ).As<IContextResolver>();
+			Container.RegisterInstance( this ).As<IStateResolver>();
 
 			Container.RegisterInstance( ParseConfiguration() );
 			Container.RegisterInstance( clientResources ).SingleInstance();
@@ -100,14 +100,14 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Example.Client
 				systemUpdateTimes.StopSample( system );
 			}
 		}
-		public IContext Resolve<ContextType>()
+		public IState Resolve<ContextType>()
 		{
 			return Resolve( typeof( ContextType ) );
 		}
 
-		public IContext Resolve( System.Type contextType )
+		public IState Resolve( System.Type contextType )
 		{
-			return (IContext) Container.Resolve( contextType );
+			return (IState) Container.Resolve( contextType );
 		}
 
 		private ClientConfiguration ParseConfiguration()

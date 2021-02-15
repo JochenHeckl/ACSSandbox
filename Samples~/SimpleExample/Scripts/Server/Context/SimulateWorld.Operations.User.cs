@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace de.JochenHeckl.Unity.ACSSandbox.Server
 {
-	internal partial class SimulateWorld : IContext, IEquatable<SimulateWorld>
+	internal partial class SimulateWorld : IState, IEquatable<SimulateWorld>
 	{
 		private int nextUnitId;
 
@@ -160,12 +160,12 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Server
 			throw new NotImplementedException();
 		}
 
-		public void ActivateContext( IContextContainer contextContainer )
+		public void ActivateState( IStateMachine contextContainer )
 		{
 			
 		}
 
-		public void DeactivateContext( IContextContainer contextContainer )
+		public void DeactivateState( IStateMachine contextContainer )
 		{
 			
 		}
