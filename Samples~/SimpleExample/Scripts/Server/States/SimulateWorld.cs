@@ -1,18 +1,17 @@
 ﻿using System.Linq;
-using de.JochenHeckl.Unity.ACSSandbox.Protocol.ClientToServer;
+
 using de.JochenHeckl.Unity.ACSSandbox.Protocol.ServerToClient;
 
 using UnityEngine;
 
 namespace de.JochenHeckl.Unity.ACSSandbox.Server
 {
-	internal partial class SimulateWorld : IState
+	internal class SimulateWorld : IState
 	{
 		private readonly ServerConfiguration configuration;
 		private readonly IServerOperations operations;
 		private readonly IServerResources resources;
 		private readonly IServerRuntimeData runtimeData;
-		private readonly IAddressableMessageDispatcher<int> messageDispatcher;
 		private readonly INetworkServer networkServer;
 
 		private float nextUnitDataSyncTimeSec;
@@ -22,31 +21,30 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Server
 			IServerOperations operationsIn,
 			IServerResources resourcesIn,
 			IServerRuntimeData runtimeDataIn,
-			INetworkServer networkServerIn,
-			IAddressableMessageDispatcher<int> messageDispatcherIn )
+			INetworkServer networkServerIn )
 		{
 			configuration = configurationIn;
 			operations = operationsIn;
 			resources = resourcesIn;
 			runtimeData = runtimeDataIn;
 			networkServer = networkServerIn;
-			messageDispatcher = messageDispatcherIn;
+		}
+
+		public void ActivateState( IStateMachine stateMachine )
+		{
+		}
+
+		public void DeactivateState( IStateMachine stateMachine )
+		{
 		}
 
 		public void EnterState( IStateMachine contextContainer )
 		{
-			messageDispatcher.RegisterHandler<LoginRequest>( HandleLoginRequest );
-			messageDispatcher.RegisterHandler<SpawnRequest>( HandleSpawnRequest );
-			messageDispatcher.RegisterHandler<NavigateToPositionRequest>( HandleNavigateToPositionRequest );
-
 			nextUnitDataSyncTimeSec = Time.realtimeSinceStartup;
 		}
 
 		public void LeaveState( IStateMachine contextContainer )
 		{
-			messageDispatcher.DeregisterHandler<NavigateToPositionRequest>( HandleNavigateToPositionRequest );
-			messageDispatcher.DeregisterHandler<SpawnRequest>( HandleSpawnRequest );
-			messageDispatcher.DeregisterHandler<LoginRequest>( HandleLoginRequest );
 		}
 
 		public void UpdateState( IStateMachine contextContainer, float deltaTimeSec )
@@ -57,7 +55,6 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Server
 
 				SyncUnits();
 			}
-
 		}
 
 		private void SyncUnits()

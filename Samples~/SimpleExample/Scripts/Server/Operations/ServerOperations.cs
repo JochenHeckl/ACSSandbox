@@ -1,22 +1,37 @@
 ﻿using System.Linq;
-using de.JochenHeckl.Unity.ACSSandbox.Common;
+
+using de.JochenHeckl.Unity.ACSSandbox.Protocol.ClientToServer;
 
 namespace de.JochenHeckl.Unity.ACSSandbox.Server
 {
-	internal class ServerOperations : IServerOperations
+	internal partial class ServerOperations : IServerOperations
 	{
-		private IServerRuntimeData runtimeData;
-		private INetworkServer networkServer;
-		private IMessageSerializer messageSerializer;
+		private readonly IServerConfiguration configuration;
+		private readonly IServerRuntimeData runtimeData;
+		private readonly IServerResources resources;
+		private readonly INetworkServer networkServer;
+		private readonly IMessageSerializer messageSerializer;
+		private readonly IAddressableMessageDispatcher<int> messageDispatcher;
 
 		public ServerOperations(
+			IServerConfiguration configurationIn,
 			IServerRuntimeData runtimeDataIn,
+			IServerResources resourcesIn,
 			INetworkServer networkServerIn,
-			IMessageSerializer messageSerializerIn )
+			IMessageSerializer messageSerializerIn
+			,
+			IAddressableMessageDispatcher<int> messageDispatcherIn )
 		{
+			configuration = configurationIn;
 			runtimeData = runtimeDataIn;
+			resources = resourcesIn;
 			networkServer = networkServerIn;
 			messageSerializer = messageSerializerIn;
+			messageDispatcher = messageDispatcherIn;
+
+			messageDispatcher.RegisterHandler<LoginRequest>( HandleLoginRequest );
+			messageDispatcher.RegisterHandler<SpawnRequest>( HandleSpawnRequest );
+			messageDispatcher.RegisterHandler<NavigateToPositionRequest>( HandleNavigateToPositionRequest );
 		}
 
 		public AuthenticatedClient GetAuthenticatedClient( int clientConnectionId )

@@ -19,5 +19,6 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Server
 		World World { get; set; }
 
 		IDictionary<long, (IServerUnitData unitData, ServerUnitView unitView)> Units { get; set; }
+		int NextUnitId { get; set; }
 	}
 }
