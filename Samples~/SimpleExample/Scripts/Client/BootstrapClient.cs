@@ -51,7 +51,7 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Example.Client
 			Container.Register<ClientNetworkMessageDispatcher>().SingleInstance();
 
 			Container.Register<NetworkClientSystem>().SingleInstance();
-			Container.Register<ClientContextSystem>().SingleInstance();
+			Container.Register<ClientStateSystem>().SingleInstance();
 			Container.Register<UserInputSystem>().SingleInstance();
 
 			Container.Register<ClientOperations>().As<IClientOperations>().SingleInstance();
@@ -61,7 +61,7 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Example.Client
 			Container.Register<InteractWithWorld>();
 		}
 
-		public void Start()
+		public void OnEnable()
 		{
 			var configuration = Container.Resolve<ClientConfiguration>();
 			Application.targetFrameRate = configuration.FPSLimit;
@@ -75,7 +75,7 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Example.Client
 			}
 		}
 
-		public override void OnDestroy()
+		public void OnDisable()
 		{
 			File.WriteAllLines( "clientSytemUpdateTimes.TimeSamples.md", systemUpdateTimes.MarkDownSamples(
 				"Client system update times",
@@ -85,8 +85,6 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Example.Client
 			{
 				system.Shutdown();
 			}
-
-			base.OnDestroy();
 		}
 
 		public void Update()

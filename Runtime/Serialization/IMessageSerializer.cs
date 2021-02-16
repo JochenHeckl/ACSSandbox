@@ -1,4 +1,4 @@
-namespace de.JochenHeckl.Unity.ACSSandbox.Common
+namespace de.JochenHeckl.Unity.ACSSandbox
 {
 	public interface IMessageSerializer
 	{

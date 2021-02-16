@@ -49,7 +49,7 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Server
 
 			Container.Register<NetworkServerUnityTransport>().SingleInstance();
 			Container.Register<ServerNetworkMessageDispatcher>().SingleInstance();
-			Container.Register<ServerContextSystem>().SingleInstance();
+			Container.Register<ServerStateSystem>().SingleInstance();
 			Container.Register<SimulationSystem>().SingleInstance();
 
 			Container.Register<ServerOperations>().As<IServerOperations>();

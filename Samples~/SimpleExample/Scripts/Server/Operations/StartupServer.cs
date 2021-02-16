@@ -11,7 +11,7 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Server
 		private ServerConfiguration configuration;
 		private IServerResources resources;
 		private IServerRuntimeData runtimeData;
-		private IMessageDispatcher messageDispatcher;
+		private IAddressableMessageDispatcher<int> messageDispatcher;
 		private INetworkServer networkServer;
 		private IMessageSerializer messageSerializer;
 
@@ -21,7 +21,7 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Server
 			IServerRuntimeData runtimeDataIn,
 			INetworkServer networkServerIn,
 			IMessageSerializer messageSerializerIn,
-			IMessageDispatcher messageDispatcherIn )
+			IAddressableMessageDispatcher<int> messageDispatcherIn )
 		{
 			configuration = configurationIn;
 			resources = resourcesIn;
@@ -48,8 +48,8 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Server
 
 		public void LeaveState( IStateMachine contextContainer )
 		{
-			messageDispatcher.UnregisterHandler<PingRequest>( HandlePingRequest );
-			messageDispatcher.UnregisterHandler<ServerDataRequest>( HandleGlobalServerDataRequest );
+			messageDispatcher.DeregisterHandler<PingRequest>( HandlePingRequest );
+			messageDispatcher.DeregisterHandler<ServerDataRequest>( HandleGlobalServerDataRequest );
 		}
 
 		public void ActivateState( IStateMachine contextContainer ) { }

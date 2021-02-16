@@ -3,7 +3,7 @@ using System.Text;
 using System.IO;
 using Newtonsoft.Json;
 
-namespace de.JochenHeckl.Unity.ACSSandbox.Common
+namespace de.JochenHeckl.Unity.ACSSandbox
 {
 	public class MessageSerializerJson : MessageSerializerWithTypeIdPrefix
 	{

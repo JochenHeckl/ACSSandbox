@@ -105,7 +105,7 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Server
 					UnitData = controlledUnit
 				};
 
-				
+				controlledUnit.Destination = controlledUnit.Position;
 				runtimeData.Units[ controlledUnit.UnitId ] = ( controlledUnit, serverUnitView );
 			}
 

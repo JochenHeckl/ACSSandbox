@@ -10,7 +10,7 @@ using UnityEngine;
 
 namespace de.JochenHeckl.Unity.ACSSandbox.Server
 {
-	internal class ServerNetworkMessageDispatcher : TypeMapMessageDispatcher, IServerSystem
+	internal class ServerNetworkMessageDispatcher : TypeMapAddressableMessageDispatcher<int>, IServerSystem
 	{
 		private readonly IServerRuntimeData runtimeData;
 		private readonly INetworkServer networkServer;

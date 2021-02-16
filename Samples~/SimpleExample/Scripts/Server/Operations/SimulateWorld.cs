@@ -1,7 +1,4 @@
 ﻿using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-
-using de.JochenHeckl.Unity.ACSSandbox.Common;
 using de.JochenHeckl.Unity.ACSSandbox.Protocol.ClientToServer;
 using de.JochenHeckl.Unity.ACSSandbox.Protocol.ServerToClient;
 
@@ -15,7 +12,7 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Server
 		private readonly IServerOperations operations;
 		private readonly IServerResources resources;
 		private readonly IServerRuntimeData runtimeData;
-		private readonly IMessageDispatcher messageDispatcher;
+		private readonly IAddressableMessageDispatcher<int> messageDispatcher;
 		private readonly INetworkServer networkServer;
 
 		private float nextUnitDataSyncTimeSec;
@@ -26,7 +23,7 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Server
 			IServerResources resourcesIn,
 			IServerRuntimeData runtimeDataIn,
 			INetworkServer networkServerIn,
-			IMessageDispatcher messageDispatcherIn )
+			IAddressableMessageDispatcher<int> messageDispatcherIn )
 		{
 			configuration = configurationIn;
 			operations = operationsIn;
@@ -47,9 +44,9 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Server
 
 		public void LeaveState( IStateMachine contextContainer )
 		{
-			messageDispatcher.UnregisterHandler<NavigateToPositionRequest>( HandleNavigateToPositionRequest );
-			messageDispatcher.UnregisterHandler<SpawnRequest>( HandleSpawnRequest );
-			messageDispatcher.UnregisterHandler<LoginRequest>( HandleLoginRequest );
+			messageDispatcher.DeregisterHandler<NavigateToPositionRequest>( HandleNavigateToPositionRequest );
+			messageDispatcher.DeregisterHandler<SpawnRequest>( HandleSpawnRequest );
+			messageDispatcher.DeregisterHandler<LoginRequest>( HandleLoginRequest );
 		}
 
 		public void UpdateState( IStateMachine contextContainer, float deltaTimeSec )

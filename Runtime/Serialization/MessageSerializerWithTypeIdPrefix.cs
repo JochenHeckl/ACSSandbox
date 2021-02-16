@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 
-namespace de.JochenHeckl.Unity.ACSSandbox.Common
+namespace de.JochenHeckl.Unity.ACSSandbox
 {
 	public abstract class MessageSerializerWithTypeIdPrefix : IMessageSerializer
 	{

@@ -4,7 +4,7 @@ using System.IO;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Bson;
 
-namespace de.JochenHeckl.Unity.ACSSandbox.Common
+namespace de.JochenHeckl.Unity.ACSSandbox
 {
 	public class MessageSerializerBson : MessageSerializerWithTypeIdPrefix
 	{

@@ -52,7 +52,10 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Example.Client
 
 		public void DeactivateState( IStateMachine contextContainer )
 		{
-			contextUI.Hide();
+			if ( contextUI != null )
+			{
+				contextUI.Hide();
+			}
 		}
 
 		public void UpdateState( IStateMachine contextContainer, float deltaTimeSec )
