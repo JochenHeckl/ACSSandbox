@@ -1,4 +1,4 @@
-﻿using de.JochenHeckl.Unity.ACSSandbox.Protocol.ServerToClient;
+﻿using de.JochenHeckl.Unity.ACSSandbox.Example.Protocol.ServerToClient;
 
 namespace de.JochenHeckl.Unity.ACSSandbox.Example.Client
 {

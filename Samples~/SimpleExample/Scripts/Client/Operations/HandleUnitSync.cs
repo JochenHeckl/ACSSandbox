@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 
-using de.JochenHeckl.Unity.ACSSandbox.Protocol.ServerToClient;
+using de.JochenHeckl.Unity.ACSSandbox.Example.Protocol.ServerToClient;
 
 using UnityEngine;
 

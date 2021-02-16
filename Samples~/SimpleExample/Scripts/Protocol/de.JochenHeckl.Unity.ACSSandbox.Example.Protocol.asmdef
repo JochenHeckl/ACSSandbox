@@ -1,9 +1,8 @@
 {
-    "name": "de.JochenHeckl.Unity.ACSSandbox.Common",
-    "rootNamespace": "de.JochenHeckl.Unity.ACSSandbox.Common",
+    "name": "de.JochenHeckl.Unity.ACSSandbox.Example.Protocol",
+    "rootNamespace": "de.JochenHeckl.Unity.ACSSandbox.Example.Protocol",
     "references": [
-        "GUID:1ac1bd0cf575cfe4b8d295c36f1e0edd",
-        "GUID:e31f064e28b930a429ef69e965582cf8"
+        "GUID:e4d3d6442692c2f439ea98ae110d0ad9"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

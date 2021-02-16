@@ -2,7 +2,7 @@ using System;
 
 using UnityEngine;
 
-namespace de.JochenHeckl.Unity.ACSSandbox.Common
+namespace de.JochenHeckl.Unity.ACSSandbox.Example.Common
 {
     public interface IUnitData
     {

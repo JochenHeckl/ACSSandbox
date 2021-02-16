@@ -5,7 +5,7 @@ using de.JochenHeckl.Unity.DataBinding;
 
 using UnityEngine;
 
-namespace de.JochenHeckl.Unity.ACSSandbox.Common
+namespace de.JochenHeckl.Unity.ACSSandbox.Example.Common
 {
 	public class UnitView : ViewBehaviour
 	{

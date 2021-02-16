@@ -10,9 +10,9 @@ using Unity.Networking.Transport.Utilities;
 
 using UnityEngine;
 
-namespace de.JochenHeckl.Unity.ACSSandbox.Server
+namespace de.JochenHeckl.Unity.ACSSandbox
 {
-	internal struct ServerUpdateConnectionsJob : IJob
+	public struct ServerUpdateConnectionsJob : IJob
 	{
 		public NetworkDriver networkDriver;
 		public NativeList<NetworkConnection> networkConnections;
@@ -41,27 +41,27 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Server
 		}
 	}
 
-	internal class NetworkServerUnityTransport : INetworkServer
+	public class NetworkServerUnityTransport : INetworkServer
 	{
 		private NetworkDriver networkDriver;
 		private NetworkPipeline pipeline;
 
 		private NativeList<NetworkConnection> connections;
 		private JobHandle processingJobHandle;
-
-		private readonly ServerConfiguration configuration;
+		private int maxMessageBufferSizeByte;
 
 		private readonly Queue<(int connectionId, byte[] message)> inboundMessages = new Queue<(int connectionId, byte[] message)>();
 
 		public int[] ClientConnections { get; }
 
-		public NetworkServerUnityTransport( ServerConfiguration configurationIn )
+		public NetworkServerUnityTransport()
 		{
-			configuration = configurationIn;
 		}
 
-		public void Initialize()
+		public void StartServer( int serverPortIn, int maxMessageBufferSizeByteIn = 2048  )
 		{
+			maxMessageBufferSizeByte = maxMessageBufferSizeByteIn;
+
 			if ( !connections.IsCreated )
 			{
 				connections = new NativeList<NetworkConnection>( Allocator.Persistent );
@@ -74,13 +74,13 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Server
 			}
 
 			var endpoint = NetworkEndPoint.AnyIpv4;
-			endpoint.Port = (ushort) configuration.ServerPort;
+			endpoint.Port = (ushort) serverPortIn;
 
 			var bindResult = networkDriver.Bind( endpoint );
 
 			if ( bindResult != 0 )
 			{
-				throw new InvalidOperationException( $"Failed to bind networkServer to port {configuration.ServerPort}. BindResult is {bindResult}." );
+				throw new InvalidOperationException( $"Failed to bind networkServer to port {serverPortIn}. BindResult is {bindResult}." );
 			}
 
 			networkDriver.Listen();
@@ -88,7 +88,7 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Server
 			Debug.Log( $"NetworkServer listening on local end point {networkDriver.LocalEndPoint().Address}." );
 		}
 
-		public void Shutdown()
+		public void StopServer()
 		{
 			processingJobHandle.Complete();
 
@@ -108,11 +108,6 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Server
 			}
 			
 			Debug.Log( $"NetworkServer successfully shut down." );
-		}
-
-		public void Update( float deltaTimeSec )
-		{
-			ProcessNetworkEvents();
 		}
 
 		public IEnumerable<(int clientConnectionId, byte[] message)> FetchInboundMessages()
@@ -147,7 +142,7 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Server
 
 					if ( networkEventType == NetworkEvent.Type.Data )
 					{
-						if ( inboundDataStream.Length <= configuration.MaxMessageSizeByte )
+						if ( inboundDataStream.Length <= maxMessageBufferSizeByte )
 						{
 							using ( var readBuffer = new NativeArray<byte>( inboundDataStream.Length, Allocator.Temp ) )
 							{
@@ -157,7 +152,7 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Server
 						}
 						else
 						{
-							Debug.LogError( $"Max inbound message size of {configuration.MaxMessageSizeByte} exceeded " +
+							Debug.LogError( $"Max inbound message size of {maxMessageBufferSizeByte} Byte is exceeded " +
 								$"by message from {connections[connectionIndex]}. Ignoring the message." );
 						}
 					}
@@ -199,7 +194,7 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Server
 						var beginSendResult = (StatusCode) networkDriver.BeginSend(
 							pipeline,
 							connection,
-							out DataStreamWriter writer,
+							out var writer,
 							message.Length );
 
 						if ( beginSendResult == StatusCode.Success )

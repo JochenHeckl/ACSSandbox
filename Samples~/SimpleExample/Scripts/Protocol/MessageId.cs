@@ -1,9 +1,9 @@
 using System;
 
-using de.JochenHeckl.Unity.ACSSandbox.Protocol.ClientToServer;
-using de.JochenHeckl.Unity.ACSSandbox.Protocol.ServerToClient;
+using de.JochenHeckl.Unity.ACSSandbox.Example.Protocol.ClientToServer;
+using de.JochenHeckl.Unity.ACSSandbox.Example.Protocol.ServerToClient;
 
-namespace de.JochenHeckl.Unity.ACSSandbox.Protocol
+namespace de.JochenHeckl.Unity.ACSSandbox.Example.Protocol
 {
 	public static class MessageIds
 	{

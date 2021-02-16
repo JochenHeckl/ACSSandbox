@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Linq;
 
+using de.JochenHeckl.Unity.ACSSandbox.Example.Common;
 
 using UnityEngine;
-using UnityEngine.Serialization;
 
-using de.JochenHeckl.Unity.ACSSandbox.Common;
-
-namespace de.JochenHeckl.Unity.ACSSandbox.Server
+namespace de.JochenHeckl.Unity.ACSSandbox.Example.Server
 {
 	[CreateAssetMenu( fileName = "ServerResources", menuName = "ACS Sandbox/ServerResources", order = 1 )]
 	public class ServerResources : ScriptableObject, IServerResources

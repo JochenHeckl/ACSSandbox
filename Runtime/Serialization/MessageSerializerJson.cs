@@ -1,6 +1,7 @@
 ﻿using System;
-using System.Text;
 using System.IO;
+using System.Text;
+
 using Newtonsoft.Json;
 
 namespace de.JochenHeckl.Unity.ACSSandbox

@@ -1,11 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
-
 using de.JochenHeckl.Unity.DataBinding;
 
-using UnityEngine;
-
-namespace de.JochenHeckl.Unity.ACSSandbox.Server
+namespace de.JochenHeckl.Unity.ACSSandbox.Example.Server
 {
 	public class ServerUnitViewModel : ViewModelBase
 	{

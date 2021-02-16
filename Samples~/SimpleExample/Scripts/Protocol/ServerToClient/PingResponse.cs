@@ -1,4 +1,4 @@
-﻿namespace de.JochenHeckl.Unity.ACSSandbox.Protocol.ServerToClient
+﻿namespace de.JochenHeckl.Unity.ACSSandbox.Example.Protocol.ServerToClient
 {
 	public class PingResponse
 	{

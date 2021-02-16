@@ -1,19 +1,19 @@
-﻿using de.JochenHeckl.Unity.ACSSandbox.Common;
-using de.JochenHeckl.Unity.ACSSandbox.Protocol.ClientToServer;
-using de.JochenHeckl.Unity.ACSSandbox.Protocol.ServerToClient;
+﻿using de.JochenHeckl.Unity.ACSSandbox.Example.Common;
+using de.JochenHeckl.Unity.ACSSandbox.Example.Protocol.ClientToServer;
+using de.JochenHeckl.Unity.ACSSandbox.Example.Protocol.ServerToClient;
 
 using UnityEngine;
 
-namespace de.JochenHeckl.Unity.ACSSandbox.Server
+namespace de.JochenHeckl.Unity.ACSSandbox.Example.Server
 {
 	internal class StartupServer : IState
 	{
-		private ServerConfiguration configuration;
-		private IServerResources resources;
-		private IServerRuntimeData runtimeData;
-		private IAddressableMessageDispatcher<int> messageDispatcher;
-		private INetworkServer networkServer;
-		private IMessageSerializer messageSerializer;
+		private readonly ServerConfiguration configuration;
+		private readonly IServerResources resources;
+		private readonly IServerRuntimeData runtimeData;
+		private readonly IAddressableMessageDispatcher<int> messageDispatcher;
+		private readonly INetworkServer networkServer;
+		private readonly IMessageSerializer messageSerializer;
 
 		public StartupServer(
 			ServerConfiguration configurationIn,

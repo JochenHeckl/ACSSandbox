@@ -1,11 +1,9 @@
 ﻿using System;
 
-using UnityEngine;
-
-using de.JochenHeckl.Unity.ACSSandbox.Common;
+using de.JochenHeckl.Unity.ACSSandbox.Example.Common;
 
 
-namespace de.JochenHeckl.Unity.ACSSandbox.Server
+namespace de.JochenHeckl.Unity.ACSSandbox.Example.Server
 {
 	internal interface IServerResources
 	{

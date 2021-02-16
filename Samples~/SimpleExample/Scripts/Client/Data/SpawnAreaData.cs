@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 
-using de.JochenHeckl.Unity.ACSSandbox.Common;
-using de.JochenHeckl.Unity.ACSSandbox.Protocol;
+using de.JochenHeckl.Unity.ACSSandbox.Example.Common;
+using de.JochenHeckl.Unity.ACSSandbox.Example.Protocol;
 
 namespace de.JochenHeckl.Unity.ACSSandbox.Example.Client
 {

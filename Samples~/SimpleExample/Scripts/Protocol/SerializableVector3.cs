@@ -1,7 +1,7 @@
 ﻿
 using UnityEngine;
 
-namespace de.JochenHeckl.Unity.ACSSandbox.Protocol
+namespace de.JochenHeckl.Unity.ACSSandbox.Example.Protocol
 {
 	public class SerializableVector3
 	{

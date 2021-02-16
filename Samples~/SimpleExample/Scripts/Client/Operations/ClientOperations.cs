@@ -1,7 +1,7 @@
 ﻿using System;
 
-using de.JochenHeckl.Unity.ACSSandbox.Common;
-using de.JochenHeckl.Unity.ACSSandbox.Protocol.ServerToClient;
+using de.JochenHeckl.Unity.ACSSandbox.Example.Common;
+using de.JochenHeckl.Unity.ACSSandbox.Example.Protocol.ServerToClient;
 
 using UnityEditor;
 

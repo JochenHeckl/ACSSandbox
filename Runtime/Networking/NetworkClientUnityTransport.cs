@@ -16,7 +16,7 @@ namespace de.JochenHeckl.Unity.ACSSandbox
 	public class NetworkClientUnityTransport : INetworkClient
 	{
 		public bool IsConnected { get; private set; }
-		private Queue<byte[]> inboundMessages = new Queue<byte[]>();
+		private readonly Queue<byte[]> inboundMessages = new Queue<byte[]>();
 
 		private NetworkDriver networkDriver;
 		private NetworkPipeline pipeline;
@@ -39,7 +39,7 @@ namespace de.JochenHeckl.Unity.ACSSandbox
 				var beginSendResult = (StatusCode)networkDriver.BeginSend(
 					pipeline,
 					networkConnection,
-					out DataStreamWriter writer,
+					out var writer,
 					message.Length );
 
 				if ( beginSendResult == StatusCode.Success )

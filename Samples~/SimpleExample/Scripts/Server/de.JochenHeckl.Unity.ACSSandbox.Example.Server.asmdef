@@ -1,6 +1,6 @@
 {
-    "name": "de.JochenHeckl.Unity.ACSSandbox.Server",
-    "rootNamespace": "de.JochenHeckl.Unity.ACSSandbox.Server",
+    "name": "de.JochenHeckl.Unity.ACSSandbox.Example.Server",
+    "rootNamespace": "de.JochenHeckl.Unity.ACSSandbox.Example.Server",
     "references": [
         "GUID:f2d49d9fa7e7eb3418e39723a7d3b92f",
         "GUID:e0cd26848372d4e5c891c569017e11f1",

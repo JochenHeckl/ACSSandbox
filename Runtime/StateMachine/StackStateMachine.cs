@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace de.JochenHeckl.Unity.ACSSandbox
 {
@@ -7,10 +6,13 @@ namespace de.JochenHeckl.Unity.ACSSandbox
 	{
 		private readonly Stack<IState> stateStack = new Stack<IState>();
 
-		public IState ActiveState { get { return stateStack.Count > 0 ? stateStack.Peek() : null; } }
+		public IState ActiveState => stateStack.Count > 0 ? stateStack.Peek() : null;
 		public IStateResolver StateResolver { get; }
 
-		public StackStateMachine( IStateResolver stateResolver ) => StateResolver = stateResolver;
+		public StackStateMachine( IStateResolver stateResolver )
+		{
+			StateResolver = stateResolver;
+		}
 
 		public void SwitchToState( IState newState )
 		{

@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace de.JochenHeckl.Unity.ACSSandbox.Protocol.ClientToServer
+namespace de.JochenHeckl.Unity.ACSSandbox.Example.Protocol.ClientToServer
 {
     public class SpawnRequest
     {

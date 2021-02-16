@@ -6,8 +6,8 @@ namespace de.JochenHeckl.Unity.ACSSandbox
 {
 	public abstract class MessageSerializerWithTypeIdPrefix : IMessageSerializer
 	{
-		private Dictionary<byte, Type> messageTypeMap = new Dictionary<byte, Type>();
-		private Dictionary<Type, byte> messageTypeIdMap = new Dictionary<Type, byte>();
+		private readonly Dictionary<byte, Type> messageTypeMap = new Dictionary<byte, Type>();
+		private readonly Dictionary<Type, byte> messageTypeIdMap = new Dictionary<Type, byte>();
 
 		public abstract byte[] Serialize( MemoryStream memoryStream, object message );
 		public abstract object Deserialize( byte[] data, int offset, Type type );

@@ -1,4 +1,4 @@
-﻿namespace de.JochenHeckl.Unity.ACSSandbox.Protocol.ClientToServer
+﻿namespace de.JochenHeckl.Unity.ACSSandbox.Example.Protocol.ClientToServer
 {
 	public class PingRequest
 	{

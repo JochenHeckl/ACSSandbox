@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace de.JochenHeckl.Unity.ACSSandbox.Server
+namespace de.JochenHeckl.Unity.ACSSandbox.Example.Server
 {
-	interface IServerConfiguration
+	internal interface IServerConfiguration
 	{
 		public Guid ServerWorldId { get; }
 		public int ServerPort { get; }

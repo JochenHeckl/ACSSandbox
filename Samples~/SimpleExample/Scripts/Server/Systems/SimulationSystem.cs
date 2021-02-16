@@ -1,8 +1,7 @@
-﻿using System;
-
+﻿
 using UnityEngine;
 
-namespace de.JochenHeckl.Unity.ACSSandbox.Server
+namespace de.JochenHeckl.Unity.ACSSandbox.Example.Server
 {
 	internal class SimulationSystem : IServerSystem
 	{

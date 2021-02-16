@@ -1,15 +1,14 @@
 ﻿using System.IO;
 using System.Linq;
 
-using de.JochenHeckl.Unity.ACSSandbox.Common;
-using de.JochenHeckl.Unity.ACSSandbox.Protocol;
+using de.JochenHeckl.Unity.ACSSandbox.Example.Protocol;
 using de.JochenHeckl.Unity.IoCLight;
 
 using Newtonsoft.Json;
 
 using UnityEngine;
 
-namespace de.JochenHeckl.Unity.ACSSandbox.Server
+namespace de.JochenHeckl.Unity.ACSSandbox.Example.Server
 {
 	public class BootstrapServer : BootstrapBase, IStateResolver
 	{
@@ -49,6 +48,8 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Server
 
 			Container.Register<NetworkServerUnityTransport>().SingleInstance();
 			Container.Register<ServerNetworkMessageDispatcher>().SingleInstance();
+
+			Container.Register<NetworkServerSystem>().SingleInstance();
 			Container.Register<ServerStateSystem>().SingleInstance();
 			Container.Register<SimulationSystem>().SingleInstance();
 

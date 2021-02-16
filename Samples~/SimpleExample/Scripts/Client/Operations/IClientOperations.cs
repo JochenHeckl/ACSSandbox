@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using de.JochenHeckl.Unity.ACSSandbox.Protocol.ServerToClient;
+using de.JochenHeckl.Unity.ACSSandbox.Example.Protocol.ServerToClient;
 
 namespace de.JochenHeckl.Unity.ACSSandbox.Example.Client
 {

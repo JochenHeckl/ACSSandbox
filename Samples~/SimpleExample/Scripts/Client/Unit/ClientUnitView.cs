@@ -1,4 +1,4 @@
-using de.JochenHeckl.Unity.ACSSandbox.Common;
+using de.JochenHeckl.Unity.ACSSandbox.Example.Common;
 
 using UnityEngine;
 

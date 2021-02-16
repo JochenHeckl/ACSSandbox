@@ -1,4 +1,4 @@
-﻿namespace de.JochenHeckl.Unity.ACSSandbox.Server
+﻿namespace de.JochenHeckl.Unity.ACSSandbox.Example.Server
 {
 	public class AuthenticatedClient
 	{

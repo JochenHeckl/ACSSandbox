@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-using de.JochenHeckl.Unity.ACSSandbox.Common;
+using de.JochenHeckl.Unity.ACSSandbox.Example.Common;
 using System.Collections.Generic;
 
 namespace de.JochenHeckl.Unity.ACSSandbox.Example.Client

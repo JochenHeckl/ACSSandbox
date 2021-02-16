@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using de.JochenHeckl.Unity.ACSSandbox.Common;
+using de.JochenHeckl.Unity.ACSSandbox.Example.Common;
 
 using UnityEngine.UIElements;
 
-namespace de.JochenHeckl.Unity.ACSSandbox.Protocol.ServerToClient
+namespace de.JochenHeckl.Unity.ACSSandbox.Example.Protocol.ServerToClient
 {
 	public class UnitSync
 	{

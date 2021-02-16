@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 
+using de.JochenHeckl.Unity.ACSSandbox.Example.Common;
+
 using UnityEngine;
 
-using de.JochenHeckl.Unity.ACSSandbox.Common;
-
-namespace de.JochenHeckl.Unity.ACSSandbox.Server
+namespace de.JochenHeckl.Unity.ACSSandbox.Example.Server
 {
 	internal class ServerRuntimeData : IServerRuntimeData
 	{
