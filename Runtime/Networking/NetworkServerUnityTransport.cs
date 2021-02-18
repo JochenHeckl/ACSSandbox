@@ -9,6 +9,7 @@ using Unity.Networking.Transport.Error;
 using Unity.Networking.Transport.Utilities;
 
 using UnityEngine;
+using UnityEngine.Scripting;
 
 namespace de.JochenHeckl.Unity.ACSSandbox
 {
@@ -41,6 +42,7 @@ namespace de.JochenHeckl.Unity.ACSSandbox
 		}
 	}
 
+	[Preserve]
 	public class NetworkServerUnityTransport : INetworkServer
 	{
 		private NetworkDriver networkDriver;
