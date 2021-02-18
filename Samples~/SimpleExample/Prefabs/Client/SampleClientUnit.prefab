@@ -47,10 +47,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dataSourceType:
     assemblyQualifiedName: de.JochenHeckl.Unity.ACSSandbox.Example.Client.ClientUnitViewModel,
-      de.JochenHeckl.Unity.ACSSandbox.Example.Client, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
+      de.JochenHeckl.Unity.ACSSandbox.Example.Client, Version=0.0.0.0, Culture=neutral,
+      PublicKeyToken=null
   condenseValidBuilders: 1
   unitId: 0
   unitTypeId: 1
+  maxLerpDelaySec: 0.1
 --- !u!114 &2006814239457532032
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -127,7 +129,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: 1640f8cb5635eb14cb004d3785e21223, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

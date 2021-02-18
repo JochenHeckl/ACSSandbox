@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   projectName: ACS Sandbox Server
   scriptingImplementation: 1
-  managedStrippingLevel: 0
+  managedStrippingLevel: 1
   buildDefines: []
   extraScriptingDefines: []
   targetPath: Build/Server/Windows/ACSSandbox.Server.exe

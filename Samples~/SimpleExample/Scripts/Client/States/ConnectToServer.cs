@@ -51,6 +51,9 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Example.Client
 
 		public void ActivateState( IStateMachine contextContainer )
 		{
+			runtimeData.LobbyCamera.gameObject.SetActive( true );
+			runtimeData.WorldCamera.SetActive( false );
+
 			ShowContextUI();
 		}
 
@@ -69,6 +72,7 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Example.Client
 			if ( TestConnectionTimeout() )
 			{
 				HandleConnectionTimeout();
+				return;
 			}
 
 			if ( TestLoginRequestRequired() )
@@ -126,22 +130,20 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Example.Client
 				contextUI = UnityEngine.Object.Instantiate( resources.ConnectToServerView, runtimeData.UserInterfaceRoot );
 			}
 
-			var loginViewModel = MakeLogionViewModel();
-			runtimeData.ViewModels.ConnectToServerViewModel = loginViewModel;
-
-			runtimeData.LobbyCamera.gameObject.SetActive( true );
-			runtimeData.WorldCamera.SetActive( false );
-
-			contextUI.DataSource = loginViewModel;
+			runtimeData.ViewModels.ConnectToServerViewModel = MakeConnectToServerViewModel();
+			contextUI.DataSource = runtimeData.ViewModels.ConnectToServerViewModel;
 			contextUI.Show();
 		}
 
 		private void HideContextUI()
 		{
-			contextUI.Hide();
+			if ( contextUI != null )
+			{
+				contextUI.Hide();
+			}
 		}
 
-		private ConnectToServerViewModel MakeLogionViewModel()
+		private ConnectToServerViewModel MakeConnectToServerViewModel()
 		{
 			var preselectedHost = configuration.WellKnownServers.FirstOrDefault();
 

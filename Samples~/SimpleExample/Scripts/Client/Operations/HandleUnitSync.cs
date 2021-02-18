@@ -12,7 +12,12 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Example.Client
 		{
 			// TODO: optimize for efficiency
 			// reuse Units that are removed for new ones
-			
+
+			if ( runtimeData.World == null )
+			{
+				return;
+			}
+
 			var localUnitIds = runtimeData.Units.Keys;
 			var remoteUnitIds = message.Units.Select( x => x.UnitId ).ToArray();
 

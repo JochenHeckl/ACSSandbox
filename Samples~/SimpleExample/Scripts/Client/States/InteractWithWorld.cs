@@ -12,8 +12,6 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Example.Client
 	{
 		private ContextUIView contextUI;
 
-		private bool worldDataLoaded;
-
 		private readonly IClientOperations operations;
 		private readonly ClientConfiguration configuration;
 		private readonly IClientResources resources;
@@ -36,7 +34,23 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Example.Client
 			operations.RegisterHandler<SpawnResponse>( HandleSpawnResponse );
 			operations.RegisterHandler<NavigateToPositionResponse>( HandleNavigateToPositionResponse );
 
-			ShowContextUI();
+			runtimeData.ViewModels.EnterWorldViewModel.StatusText = resources.StringResources.LoadingWorldText;
+			runtimeData.ViewModels.EnterWorldViewModel.NotifyViewModelChanged();
+
+			var worldPrefab = resources.GetWorld( runtimeData.ServerData.WorldId );
+			runtimeData.World = Object.Instantiate( worldPrefab, runtimeData.WorldRoot );
+			runtimeData.World.gameObject.RecursiveMoveToLayer( runtimeData.WorldRoot.gameObject.layer );
+
+			runtimeData.World.ActiveCamera = runtimeData.WorldCamera.ActiveCamera;
+
+			runtimeData.WorldCamera.SetActive( true );
+			runtimeData.LobbyCamera.gameObject.SetActive( false );
+
+			// TODO: replace with more sophisticated approach.
+			operations.Send( new SpawnRequest()
+			{
+				SpawnLocation = runtimeData.World.spawnLocations.First().transform.position
+			} );
 		}
 
 		public void LeaveState( IStateMachine contextContainer )
@@ -60,29 +74,6 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Example.Client
 
 		public void UpdateState( IStateMachine contextContainer, float deltaTimeSec )
 		{
-			if ( !worldDataLoaded )
-			{
-				runtimeData.ViewModels.EnterWorldViewModel.StatusText = resources.StringResources.LoadingWorldText;
-				runtimeData.ViewModels.EnterWorldViewModel.NotifyViewModelChanged();
-
-				var worldPrefab = resources.GetWorld( runtimeData.ServerData.WorldId );
-				runtimeData.World = Object.Instantiate( worldPrefab, runtimeData.WorldRoot );
-				runtimeData.World.gameObject.RecursiveMoveToLayer( runtimeData.WorldRoot.gameObject.layer );
-
-				runtimeData.World.ActiveCamera = runtimeData.WorldCamera.ActiveCamera;
-
-				runtimeData.WorldCamera.SetActive( true );
-				runtimeData.LobbyCamera.gameObject.SetActive( false );
-
-				worldDataLoaded = true;
-
-				operations.Send( new SpawnRequest()
-				{
-					SpawnLocation = runtimeData.World.spawnLocations.First().transform.position
-				} );
-
-				contextUI.Hide();
-			}
 		}
 
 		private void ShowContextUI()
@@ -92,13 +83,8 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Example.Client
 				contextUI = UnityEngine.Object.Instantiate( resources.EnterWorldView, runtimeData.UserInterfaceRoot );
 			}
 
-			var viewModel = MakeEnterWorldViewModel();
-			runtimeData.ViewModels.EnterWorldViewModel = viewModel;
-
-			runtimeData.LobbyCamera.gameObject.SetActive( true );
-			runtimeData.WorldCamera.SetActive( false );
-
-			contextUI.DataSource = viewModel;
+			runtimeData.ViewModels.EnterWorldViewModel = MakeEnterWorldViewModel();
+			contextUI.DataSource = runtimeData.ViewModels.EnterWorldViewModel;
 			contextUI.Show();
 		}
 
@@ -106,7 +92,7 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Example.Client
 		{
 			return new EnterWorldViewModel()
 			{
-				StatusText = resources.StringResources.AcquireServerDataText
+				StatusText = "xxx"
 			};
 		}
 
