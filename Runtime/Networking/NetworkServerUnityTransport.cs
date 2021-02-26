@@ -37,6 +37,8 @@ namespace de.JochenHeckl.Unity.ACSSandbox
 
 			while ( (networkConnection = networkDriver.Accept()) != default )
 			{
+				var remoteEndpoint = networkDriver.RemoteEndPoint( networkConnection );
+				Debug.Log( $"client connection {networkConnection.InternalId} accepted from {remoteEndpoint.Address}:{remoteEndpoint.Port}." );
 				networkConnections.Add( networkConnection );
 			}
 		}
@@ -54,11 +56,7 @@ namespace de.JochenHeckl.Unity.ACSSandbox
 
 		private readonly Queue<(int connectionId, byte[] message)> inboundMessages = new Queue<(int connectionId, byte[] message)>();
 
-		public int[] ClientConnections { get; }
-
-		public NetworkServerUnityTransport()
-		{
-		}
+		public int[] ClientIds => connections.IsCreated ? connections.Select( x => x.InternalId ).ToArray() : new int[] { };
 
 		public void StartServer( int serverPortIn, int maxMessageBufferSizeByteIn = 2048  )
 		{
@@ -106,6 +104,7 @@ namespace de.JochenHeckl.Unity.ACSSandbox
 					connections.Dispose();
 				}
 
+				networkDriver.ScheduleUpdate().Complete();
 				networkDriver.Dispose();
 			}
 			
@@ -122,7 +121,7 @@ namespace de.JochenHeckl.Unity.ACSSandbox
 			}
 		}
 
-		public void ProcessNetworkEvents()
+		public void ProcessNetworkEvents( Action<int> clientConnectedCallback, Action<int> clientDisconnectedCallback )
 		{
 			processingJobHandle.Complete();
 
@@ -134,11 +133,19 @@ namespace de.JochenHeckl.Unity.ACSSandbox
 				while ( (networkEventType = networkDriver.PopEventForConnection( connections[connectionIndex], out inboundDataStream ))
 					!= NetworkEvent.Type.Empty )
 				{
-					// we do not get connects - this is handled by accepts
-					// if ( networkEventType == NetworkEvent.Type.Connect ){}
+					if ( networkEventType == NetworkEvent.Type.Connect )
+					{
+						Debug.Log( $"NetworkClient {connections[connectionIndex].InternalId} connected." );
+
+						clientConnectedCallback?.Invoke( connections[connectionIndex].InternalId );
+					}
 
 					if ( networkEventType == NetworkEvent.Type.Disconnect )
 					{
+						Debug.Log( $"NetworkClient {connections[connectionIndex].InternalId} disconnected.");
+
+						clientDisconnectedCallback?.Invoke( connections[connectionIndex].InternalId );
+
 						connections[connectionIndex] = default;
 					}
 

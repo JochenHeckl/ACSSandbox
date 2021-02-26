@@ -4,13 +4,11 @@ using System.Linq;
 
 using UnityEditor;
 
-using UnityEngine;
-
 namespace de.JochenHeckl.Unity.ACSSandbox.Editor
 {
-	public static class ACSSandboxMenu
+	public static class SimpleExampleMenu
 	{
-		[MenuItem( "ACS Sandbox/Kill ACSSandbox.Server" )]
+		[MenuItem( "ACS Sandbox/SimpleExample/Kill ACSSandbox.Server" )]
 		public static void KillWindowsServers()
 		{
 			string serverExecutableName = "ACSSandbox.Server";
@@ -24,7 +22,7 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Editor
 			}
 		}
 
-		[MenuItem( "ACS Sandbox/Show TimeSamples" )]
+		[MenuItem( "ACS Sandbox/SimpleExample/Show TimeSamples" )]
 		public static void ShowTimeSamples()
 		{
 			var allSamples = Directory.EnumerateFiles( Directory.GetCurrentDirectory(), "*.TimeSamples.md" ).ToArray();
@@ -38,7 +36,7 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Editor
 			Process.Start( "TimeSamples.md" );
 		}
 
-		[MenuItem( "ACS Sandbox/Build/Build Windows Server" )]
+		[MenuItem( "ACS Sandbox/SimpleExample/Build/Build Windows Server" )]
 		public static void BuildWindowsServer()
 		{
 			KillWindowsServers();

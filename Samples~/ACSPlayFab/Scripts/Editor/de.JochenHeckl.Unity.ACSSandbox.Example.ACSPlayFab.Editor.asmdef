@@ -1,6 +1,6 @@
 {
-    "name": "de.JochenHeckl.Unity.ACSSandbox.Example.Editor",
-    "rootNamespace": "de.JochenHeckl.Unity.ACSSandbox.Example.Editor",
+    "name": "de.JochenHeckl.Unity.ACSSandbox.Example.ACSPlayFab.Editor",
+    "rootNamespace": "de.JochenHeckl.Unity.ACSSandbox.Example.ACSPlayFab.Editor",
     "references": [
         "GUID:719f27bf840759a489822c6a28a2e7f4"
     ],

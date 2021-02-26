@@ -1,3 +1,14 @@
 {
-	"name": "de.JochenHeckl.Unity.ACSSandbox.3rdParty"
+    "name": "de.JochenHeckl.Unity.ACSSandbox.ThirdParty",
+    "rootNamespace": "de.JochenHeckl.Unity.ACSSandbox.ThirdParty",
+    "references": [],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
 }

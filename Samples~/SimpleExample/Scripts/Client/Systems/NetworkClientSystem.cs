@@ -50,7 +50,7 @@ namespace de.JochenHeckl.Unity.ACSSandbox.Example.Client
 				nextNetworkConnectionRetrySec = Time.realtimeSinceStartup + configuration.NetworkConnectionRetryIntervalSec;
 			}
 
-			networkClient.UpdateProcessing();
+			networkClient.ProcessNetworkEvents();
 
 			if ( TextTryReconnect() )
 			{

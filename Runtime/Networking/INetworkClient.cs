@@ -9,7 +9,7 @@ namespace de.JochenHeckl.Unity.ACSSandbox
 		void Connect( string serverAddress, int serverPort );
 		void ResetConnection();
 
-		void UpdateProcessing();
+		void ProcessNetworkEvents();
 
 		void Send( byte[] message );
 		IEnumerable<byte[]> FecthInboundMessages();

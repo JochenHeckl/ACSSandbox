@@ -1,0 +1,17 @@
+{
+    "name": "de.JochenHeckl.Unity.ACSSandbox.Example.ACSPlayFab.Server",
+    "rootNamespace": "de.JochenHeckl.Unity.ACSSandbox.Example.ACSPlayFab.Server",
+    "references": [
+        "GUID:b22594e081a4863428e97e336c13d057",
+        "GUID:0da6d172d18a54e4389d0dce1e1ffdf2"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

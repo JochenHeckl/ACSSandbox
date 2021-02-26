@@ -24,6 +24,11 @@
       "displayName": "SimpleExample",
       "description": "Run around a square area by clicking.",
       "path": "Samples~/SimpleExample"
+    },
+    {
+      "displayName": "ACS PlayFab (minimal)",
+      "description": "A minimal example showing how to connect to a PlayFab instance.",
+      "path": "Samples~/ACSPlayFab"
     }
   ],
   "dependencies": {

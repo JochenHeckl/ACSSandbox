@@ -1,9 +1,7 @@
 {
-    "name": "de.JochenHeckl.Unity.ACSSandbox.Example.Editor",
-    "rootNamespace": "de.JochenHeckl.Unity.ACSSandbox.Example.Editor",
-    "references": [
-        "GUID:719f27bf840759a489822c6a28a2e7f4"
-    ],
+    "name": "de.JochenHeckl.Unity.ACSSandbox.Editor",
+    "rootNamespace": "de.JochenHeckl.Unity.ACSSandbox.Editor",
+    "references": [],
     "includePlatforms": [
         "Editor"
     ],

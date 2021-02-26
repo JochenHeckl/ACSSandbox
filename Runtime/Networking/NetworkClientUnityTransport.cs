@@ -116,7 +116,7 @@ namespace de.JochenHeckl.Unity.ACSSandbox
 			IsConnected = false;
 		}
 
-		public void UpdateProcessing()
+		public void ProcessNetworkEvents()
 		{
 			processingJobHandle.Complete();
 

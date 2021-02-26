@@ -1,10 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace de.JochenHeckl.Unity.ACSSandbox
 {
 	public interface INetworkServer
 	{
-		int[] ClientConnections
+		int[] ClientIds
 		{
 			get;
 		}
@@ -12,7 +13,7 @@ namespace de.JochenHeckl.Unity.ACSSandbox
 		void StartServer( int serverPortIn, int maxMessageBufferSizeByteIn );
 		void StopServer();
 
-		void ProcessNetworkEvents();
+		void ProcessNetworkEvents( Action<int> clientConnectedCallback, Action<int> clientDisconnectedCallback );
 		IEnumerable<(int clientConnectionId, byte[] message)> FetchInboundMessages();
 
 		void Send( int clientConnectionId, byte[] message );
