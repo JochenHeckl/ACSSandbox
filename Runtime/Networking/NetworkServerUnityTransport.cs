@@ -13,7 +13,7 @@ using UnityEngine.Scripting;
 
 namespace de.JochenHeckl.Unity.ACSSandbox
 {
-	public struct ServerUpdateConnectionsJob : IJob
+	public struct ServerAcceptConnectionsJob : IJob
 	{
 		public NetworkDriver networkDriver;
 		public NativeList<NetworkConnection> networkConnections;
@@ -54,9 +54,11 @@ namespace de.JochenHeckl.Unity.ACSSandbox
 		private JobHandle processingJobHandle;
 		private int maxMessageBufferSizeByte;
 
+		private ServerAcceptConnectionsJob acceptConnectionsJob;
+
 		private readonly Queue<(int connectionId, byte[] message)> inboundMessages = new Queue<(int connectionId, byte[] message)>();
 
-		public int[] ClientIds => connections.IsCreated ? connections.Select( x => x.InternalId ).ToArray() : new int[] { };
+		public List<int> ClientIds { get; } = new List<int>();
 
 		public void StartServer( int serverPortIn, int maxMessageBufferSizeByteIn = 2048  )
 		{
@@ -86,11 +88,24 @@ namespace de.JochenHeckl.Unity.ACSSandbox
 			networkDriver.Listen();
 
 			Debug.Log( $"NetworkServer listening on local end point {networkDriver.LocalEndPoint().Address}." );
+
+			acceptConnectionsJob = new ServerAcceptConnectionsJob()
+			{
+				networkDriver = networkDriver,
+				networkConnections = new NativeList<NetworkConnection>( Allocator.Persistent )
+			};
 		}
 
 		public void StopServer()
 		{
 			processingJobHandle.Complete();
+
+			if( acceptConnectionsJob.networkConnections.IsCreated )
+			{
+				acceptConnectionsJob.networkConnections.Dispose();
+			}
+
+			ClientIds.Clear();
 
 			if ( networkDriver.IsCreated )
 			{
@@ -125,6 +140,17 @@ namespace de.JochenHeckl.Unity.ACSSandbox
 		{
 			processingJobHandle.Complete();
 
+			if( acceptConnectionsJob.networkConnections.Length > 0 )
+			{
+				for( var clientIdx = 0; clientIdx < acceptConnectionsJob.networkConnections.Length; clientIdx++ )
+				{
+					connections.Add( acceptConnectionsJob.networkConnections[clientIdx] );
+					clientConnectedCallback?.Invoke( acceptConnectionsJob.networkConnections[clientIdx].InternalId );
+				}
+
+				acceptConnectionsJob.networkConnections.Clear();
+			}
+
 			DataStreamReader inboundDataStream;
 			NetworkEvent.Type networkEventType;
 
@@ -136,7 +162,8 @@ namespace de.JochenHeckl.Unity.ACSSandbox
 					if ( networkEventType == NetworkEvent.Type.Connect )
 					{
 						Debug.Log( $"NetworkClient {connections[connectionIndex].InternalId} connected." );
-
+						
+						ClientIds.Add( connections[connectionIndex].InternalId );
 						clientConnectedCallback?.Invoke( connections[connectionIndex].InternalId );
 					}
 
@@ -144,6 +171,7 @@ namespace de.JochenHeckl.Unity.ACSSandbox
 					{
 						Debug.Log( $"NetworkClient {connections[connectionIndex].InternalId} disconnected.");
 
+						ClientIds.Remove( connections[connectionIndex].InternalId );
 						clientDisconnectedCallback?.Invoke( connections[connectionIndex].InternalId );
 
 						connections[connectionIndex] = default;
@@ -168,14 +196,8 @@ namespace de.JochenHeckl.Unity.ACSSandbox
 				}
 			}
 
-			var connectionJob = new ServerUpdateConnectionsJob
-			{
-				networkDriver = networkDriver,
-				networkConnections = connections
-			};
-
 			processingJobHandle = networkDriver.ScheduleUpdate();
-			processingJobHandle = connectionJob.Schedule( processingJobHandle );
+			processingJobHandle = acceptConnectionsJob.Schedule( processingJobHandle );
 		}
 
 		public void Send( int clientConnectionId, byte[] message )

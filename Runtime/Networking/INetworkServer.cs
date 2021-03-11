@@ -5,7 +5,7 @@ namespace de.JochenHeckl.Unity.ACSSandbox
 {
 	public interface INetworkServer
 	{
-		int[] ClientIds
+		List<int> ClientIds
 		{
 			get;
 		}

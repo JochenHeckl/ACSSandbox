@@ -28,7 +28,7 @@
     {
       "displayName": "ACS PlayFab (minimal)",
       "description": "A minimal example showing how to connect to a PlayFab instance.",
-      "path": "Samples~/ACSPlayFab"
+      "path": "Samples~/ACS PlayFab (minimal)"
     }
   ],
   "dependencies": {
