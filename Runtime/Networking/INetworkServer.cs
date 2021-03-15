@@ -13,7 +13,7 @@ namespace de.JochenHeckl.Unity.ACSSandbox
 		void StartServer( int serverPortIn, int maxMessageBufferSizeByteIn );
 		void StopServer();
 
-		void ProcessNetworkEvents( Action<int> clientConnectedCallback, Action<int> clientDisconnectedCallback );
+		void ProcessNetworkEvents( Action<int> clientConnectedCallback = null, Action<int> clientDisconnectedCallback = null );
 		IEnumerable<(int clientConnectionId, byte[] message)> FetchInboundMessages();
 
 		void Send( int clientConnectionId, byte[] message );
