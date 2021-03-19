@@ -1,2 +1,3 @@
-[submodule "./Samples~/ACS PlayFab (minimal)/CloudScript~"]
+[submodule ".\\Samples~\\ACS PlayFab (minimal)\\CloudScript~"]
+	path = .\\Samples~\\ACS PlayFab (minimal)\\CloudScript~
 	url = git@github.com:JochenHeckl/ACSPlayFab.CloudScript.git
