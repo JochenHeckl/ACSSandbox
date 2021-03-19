@@ -1,2 +1,2 @@
 [submodule ".\\Samples~\\ACSPlayFab\\CloudScript\\"]
-	url = https://github.com/JochenHeckl/ACSPlayFab.CloudScript.git
+	url = git@github.com:JochenHeckl/ACSPlayFab.CloudScript.git
