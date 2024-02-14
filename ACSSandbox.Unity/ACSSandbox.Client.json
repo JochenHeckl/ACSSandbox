@@ -1,0 +1,10 @@
+{
+  "areaServerConnectionConfiguration" : {
+    "heartBeatIntervalMilliSec": 2000
+  },
+  "networkClientConfiguration": {
+    "clientServiceHostname": "RX5600X",
+    "clientServicePort": 1337,
+    "connectionTimeoutSec": 5.0
+  }
+}

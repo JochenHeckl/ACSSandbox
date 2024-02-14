@@ -1,0 +1,7 @@
+{
+    "NetworkServerConfiguration": {
+        "ClientServicePort": 1337,
+        "MaxMessageBufferSizeByte": 1024,
+        "ClientTimeoutSec": 5.0
+    }
+}
