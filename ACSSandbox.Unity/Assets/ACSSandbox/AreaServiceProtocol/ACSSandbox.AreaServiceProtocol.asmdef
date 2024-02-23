@@ -1,0 +1,20 @@
+{
+    "name": "ACSSandbox.AreaServiceProtocol",
+    "rootNamespace": "ACSSandbox.AreaServiceProtocol",
+    "references": [
+        "GUID:2665a8d13d1b3f18800f46e256720795",
+        "GUID:e0cd26848372d4e5c891c569017e11f1",
+        "GUID:fd228c28e14f1a34cbe508676c914dd7",
+        "GUID:0a09758e1c325de44bfc2db36bcc4f69",
+        "GUID:756335c0388f7114790e504ed368ae1d"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

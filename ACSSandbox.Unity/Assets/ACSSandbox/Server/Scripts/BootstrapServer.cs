@@ -1,0 +1,87 @@
+using System.IO;
+using ACSSandbox.AreaServiceProtocol;
+using ACSSandbox.Common;
+using ACSSandbox.Common.Network;
+using ACSSandbox.Common.Network.Ruffles;
+using IoCLight;
+using Unity.Logging;
+using UnityEngine;
+
+namespace ACSSandbox.Server
+{
+    public class BootstrapServer : BootstrapBase
+    {
+        public int areaServicePort = 1337;
+        private static string ServerConfigFilePath => "ACSSandbox.Server.json";
+
+        public bool useNetworkSimulator;
+        public NetworkSimulator networkSimulator;
+
+        private IAreaService areaService;
+        private ServerConfiguration configuration;
+        private float nextHearBeatSec;
+
+        public override void Compose()
+        {
+            configuration = LoadServerConfiguration();
+            Container.RegisterInstance(configuration.networkServerConfiguration);
+
+            if (useNetworkSimulator)
+            {
+                Container.RegisterInstance(networkSimulator).As<INetworkServer>();
+            }
+            else
+            {
+                Container.Register<NetworkServerRuffles>().As<INetworkServer>().SingleInstance();
+            }
+
+            Container.Register<ProtocolSerializerMemoryPack>().As<IAreaServiceProtocolSerializer>();
+            Container.Register<AreaService>().As<IAreaService>().SingleInstance();
+        }
+
+        private void Start()
+        {
+            Log.Info("Area Server starting.");
+
+            areaService = Container.Resolve<IAreaService>();
+            areaService.StartService(areaServicePort);
+
+            nextHearBeatSec = Time.time;
+        }
+
+        public void Update()
+        {
+            if (Time.time < nextHearBeatSec)
+            {
+                return;
+            }
+
+            nextHearBeatSec += configuration.HeartBeatIntervalSec;
+            areaService.Send.ServerHeartBeat(Time.time);
+        }
+
+        public async void OnApplicationQuit()
+        {
+            Log.Info("Area Server shutting down.");
+
+            await areaService.StopService();
+            areaService = null;
+        }
+
+        private static ServerConfiguration LoadServerConfiguration()
+        {
+            if (!File.Exists(ServerConfigFilePath))
+            {
+                ServerConfiguration defaultConfig = new();
+                var jsonData = JsonUtility.ToJson(defaultConfig, true);
+
+                File.WriteAllText(ServerConfigFilePath, jsonData);
+            }
+
+            var configurationJson = File.ReadAllText(ServerConfigFilePath);
+            var configuration = JsonUtility.FromJson<ServerConfiguration>(configurationJson);
+
+            return configuration;
+        }
+    }
+}

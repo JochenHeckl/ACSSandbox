@@ -1,0 +1,22 @@
+{
+    "name": "ACSSandbox.Server",
+    "rootNamespace": "ACSSandbox.Server",
+    "references": [
+        "GUID:2665a8d13d1b3f18800f46e256720795",
+        "GUID:e0cd26848372d4e5c891c569017e11f1",
+        "GUID:fd228c28e14f1a34cbe508676c914dd7",
+        "GUID:988fa01430d4f4948924dbb8e49c3259",
+        "GUID:0a09758e1c325de44bfc2db36bcc4f69",
+        "GUID:cd6715174b7de184ab73a62a69715b21",
+        "GUID:539251f83132b2c4babd7ea4a798c4a0"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

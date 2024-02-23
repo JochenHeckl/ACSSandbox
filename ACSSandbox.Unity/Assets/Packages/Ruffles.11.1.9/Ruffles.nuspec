@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+  <metadata>
+    <id>Ruffles</id>
+    <version>11.1.9</version>
+    <title>Ruffles</title>
+    <authors>Albin Corén</authors>
+    <owners>TwoTen</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <licenseUrl>https://github.com/MidLevel/Ruffles/blob/master/LICENCE</licenseUrl>
+    <projectUrl>https://github.com/MidLevel/Ruffles</projectUrl>
+    <description>Lightweight high performance reliable UDP library</description>
+    <copyright>Copyright © 2019 Albin Corén</copyright>
+    <tags>lightweight high performance reliable udp protocol game network networking</tags>
+    <dependencies>
+      <group targetFramework=".NETStandard2.0" />
+      <group targetFramework=".NETStandard2.1" />
+    </dependencies>
+  </metadata>
+</package>
