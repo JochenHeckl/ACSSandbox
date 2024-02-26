@@ -1,13 +1,10 @@
-name: Actions
+name: Build Linux Server
 
 on: [push, workflow_dispatch]
 
 jobs:
   build:
     name: Build and Run Tests
-
-    permissions:
-      checks: write
 
     strategy:
       matrix:
