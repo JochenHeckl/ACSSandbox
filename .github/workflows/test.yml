@@ -5,7 +5,19 @@ on: [push, workflow_dispatch]
 jobs:
   build:
     name: For testing purposes
-    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        unityVersion:
+          - 2023.2.7f1
+          - 2023.1.20f1
+          - 2022.3.19f1
+          - 2021.3.34f1
+        os:
+          - ubuntu-latest
+          # - windows-latest
+    
+    runs-on: ${{ matrix.os }}
 
     steps:
       - name: Checkout repository
