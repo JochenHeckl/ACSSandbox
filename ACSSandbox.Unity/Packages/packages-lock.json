@@ -230,6 +230,15 @@
         "com.unity.modules.imgui": "1.0.0"
       }
     },
+    "de.jochenheckl.unity.buildconfig": {
+      "version": "git@github.com:JochenHeckl/Unity.BuildConfig.git",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {
+        "com.unity.logging": "1.0.16"
+      },
+      "hash": "de9ac7582dc24025336916036febd66e36356b80"
+    },
     "de.jochenheckl.unity.ioclight": {
       "version": "git@github.com:JochenHeckl/IoCLight.git#register-factory",
       "depth": 0,
