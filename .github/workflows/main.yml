@@ -1,6 +1,6 @@
 name: Actions
 
-on: [push, pull_request, workflow_dispatch]
+on: [workflow_dispatch]
 
 jobs:
   build:
@@ -23,15 +23,15 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
-      # Checkout
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           lfs: false
+          repository: 
           token: ${{ secrets.GITHUB_TOKEN }}
 
       # Build
-      - name: build
+      - name: Build ACSSandbox Server
         uses: game-ci/unity-builder@v4
         env:
           UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
