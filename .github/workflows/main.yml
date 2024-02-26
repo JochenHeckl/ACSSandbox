@@ -1,6 +1,6 @@
 name: Actions
 
-on: [workflow_dispatch]
+on: [push, pull_request, workflow_dispatch]
 
 jobs:
   build:
@@ -25,10 +25,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          lfs: false
-          repository: 
-          token: ${{ secrets.GITHUB_TOKEN }}
 
       # Build
       - name: Build ACSSandbox Server
