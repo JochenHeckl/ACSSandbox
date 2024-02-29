@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="../ACSSandbox.Unity/Assets/ACSSandbox/AreaServiceProtocol/IMessage.cs" />
+    <Compile Include="../ACSSandbox.Unity/Assets/ACSSandbox/AreaServiceProtocol/IAreaServiceProtocolSerializer.cs" />
+    <Compile Include="../ACSSandbox.Unity/Assets/ACSSandbox/AreaServiceProtocol/LoginResultType.cs" />
+    <Compile Include="../ACSSandbox.Unity/Assets/ACSSandbox/AreaServiceProtocol/MessageTypeId.cs" />
+    <Compile Include="../ACSSandbox.Unity/Assets/ACSSandbox/AreaServiceProtocol/ProtocolSerializerMemoryPack.cs" />    
+    <Compile Include="../ACSSandbox.Unity/Assets/ACSSandbox/AreaServiceProtocol/ServerToClient/*.cs" />
+    <Compile Include="../ACSSandbox.Unity/Assets/ACSSandbox/AreaServiceProtocol/ClientToServer/*.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MemoryPack" Version="1.10.0" />
+  </ItemGroup>
+
+</Project>
