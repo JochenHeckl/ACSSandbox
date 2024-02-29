@@ -75,3 +75,5 @@ ACSSandbox.Client.json
 ACSSandbox.Server.json
 .vsconfig
 .idea
+
+ACSSandbox.log

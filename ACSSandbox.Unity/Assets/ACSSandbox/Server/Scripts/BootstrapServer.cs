@@ -3,6 +3,7 @@ using ACSSandbox.AreaServiceProtocol;
 using ACSSandbox.Common;
 using ACSSandbox.Common.Network;
 using ACSSandbox.Common.Network.Ruffles;
+using ACSSandbox.Common.Networking.NetworkSimulator;
 using IoCLight;
 using Unity.Logging;
 using UnityEngine;
@@ -49,7 +50,7 @@ namespace ACSSandbox.Server
             nextHearBeatSec = Time.time;
         }
 
-        public void Update()
+        public void FixedUpdate()
         {
             if (Time.time < nextHearBeatSec)
             {

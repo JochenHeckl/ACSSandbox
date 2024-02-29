@@ -2,9 +2,9 @@ using System;
 using System.IO;
 using ACSSandbox.AreaServiceProtocol;
 using ACSSandbox.Client.System;
-using ACSSandbox.Common;
 using ACSSandbox.Common.Network;
 using ACSSandbox.Common.Network.Ruffles;
+using ACSSandbox.Common.Networking.NetworkSimulator;
 using IoCLight;
 using Unity.Logging;
 using UnityEngine;
@@ -58,9 +58,6 @@ namespace ACSSandbox.Client
             areaServerConnection = Container.Resolve<IAreaServiceConnection>();
             areaServerConnection.Start(areaServerHostname, areaServerPort, clientId);
 
-            // for simplicity reasons we will just generate a pseudo secret
-            // and request a login with it. The server will always accept us.
-
             clientSystems = Container.ResolveAll<IClientSystem>();
 
             foreach (var system in clientSystems)
@@ -68,11 +65,14 @@ namespace ACSSandbox.Client
                 system.Start();
             }
 
+            // for simplicity reasons we will just generate a pseudo secret
+            // and request a login with it. The server will always accept us.
+            
             var secret = Guid.NewGuid().ToString("N");
             areaServerConnection.Send.LoginRequest(secret);
         }
 
-        public void Update()
+        public void FixedUpdate()
         {
             foreach (var system in clientSystems)
             {

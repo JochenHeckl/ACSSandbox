@@ -15,7 +15,7 @@ namespace ACSSandbox.Common
                 new LoggerConfig()
                     .MinimumLevel.Debug()
                     .WriteTo.File(
-                        "LogName.log",
+                        "ACSSandbox.log",
                         minLevel: LogLevel.Verbose,
                         formatter: LogFormatterJson.Formatter
                     )

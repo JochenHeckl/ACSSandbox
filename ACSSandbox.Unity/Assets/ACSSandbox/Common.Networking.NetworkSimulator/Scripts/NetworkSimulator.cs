@@ -1,15 +1,11 @@
-using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using ACSSandbox.Common.Network;
 using UnityEngine;
 
-namespace ACSSandbox.Common
+namespace ACSSandbox.Common.Networking.NetworkSimulator
 {
-    public partial class NetworkSimulator : MonoBehaviour, INetworkClient, INetworkServer
+    public partial class NetworkSimulator : MonoBehaviour
     {
         public IEnumerable<NetworkId> Connections { get; private set; }
 
