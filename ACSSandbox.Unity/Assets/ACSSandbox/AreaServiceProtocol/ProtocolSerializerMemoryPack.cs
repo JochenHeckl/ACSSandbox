@@ -6,6 +6,7 @@ using ACSSandbox.AreaServiceProtocol.ServerToClient;
 using MemoryPack;
 using MemoryPack.Compression;
 using System.Diagnostics;
+using System.IO;
 
 namespace ACSSandbox.AreaServiceProtocol
 {
@@ -14,7 +15,7 @@ namespace ACSSandbox.AreaServiceProtocol
         IServerMessageSerializer
     {
         private delegate void ClientMessageHandler(ClientIdType sourceId, ReadOnlySequence<byte> messageBytes);
-        private delegate void ServerMessageHandler(ReadOnlySequence<byte> messageBytes);
+        private delegate void ServerMessageHandler(ReadOnlySpan<byte> messageBytes);
         
         readonly ClientMessageHandler[] clientMessageHandlers = new ClientMessageHandler[byte.MaxValue];
         readonly ServerMessageHandler[] serverMessageHandlers = new ServerMessageHandler[byte.MaxValue];
@@ -26,15 +27,26 @@ namespace ACSSandbox.AreaServiceProtocol
             compressor.Write( stackalloc[]{(byte)message.MessageTypeId} );
             MemoryPackSerializer.Serialize(compressor, message);
             return compressor.ToArray();
+            
+            // no compression version
+            // var stream = new MemoryStream(256);
+            // stream.Write(stackalloc[]{(byte)message.MessageTypeId});
+            // stream.Write(MemoryPackSerializer.Serialize<MessageType>(message));
+
+            // return stream.ToArray();
         }
 
         public void DeserializedDispatch(ReadOnlySpan<byte> messageRaw)
         {
             using var decompressor = new BrotliDecompressor();
             var messageBytes = decompressor.Decompress(messageRaw);
+            
             var messageTypeId = messageBytes.FirstSpan[0];
+            serverMessageHandlers[messageTypeId]?.Invoke(messageRaw[1..]);
 
-            serverMessageHandlers[messageTypeId]?.Invoke(messageBytes.Slice(1));
+            // no compression version
+            // var messageTypeId = messageRaw[0];
+            // serverMessageHandlers[messageTypeId]?.Invoke(messageRaw[1..]);
         }
 
         public void DeserializedDispatch(ClientIdType sourceId, ReadOnlySpan<byte> messageRaw)
