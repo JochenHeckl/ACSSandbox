@@ -5,13 +5,12 @@ namespace ACSSandbox.AreaServiceProtocol
 {
     public class ClientSend
     {
-        private readonly IAreaServiceProtocolSerializer serializer;
+        private readonly ProtocolSerializerMemoryPack<NetworkId> serializer = new();
         private readonly INetworkClient networkClient;
 
-        public ClientSend(IAreaServiceProtocolSerializer serializer, INetworkClient networkClient)
+        public ClientSend(INetworkClient networkClient)
         {
             this.networkClient = networkClient;
-            this.serializer = serializer;
         }
 
         public void ClientHeartBeat(float clientTimeSec)

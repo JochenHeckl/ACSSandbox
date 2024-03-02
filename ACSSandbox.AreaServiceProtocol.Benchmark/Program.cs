@@ -1,23 +1,26 @@
 ﻿using System;
 using ACSSandbox.AreaServiceProtocol;
+using ACSSandbox.AreaServiceProtocol.ServerToClient;
+
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Configs;
 using BenchmarkDotNet.Jobs;
 using BenchmarkDotNet.Running;
 using BenchmarkDotNet.Toolchains.InProcess.Emit;
-using ClientToServer = ACSSandbox.AreaServiceProtocol.ClientToServer;
+using ServerToClient = ACSSandbox.AreaServiceProtocol.ServerToClient;
 
 namespace Benchmarks
 {
     [MemoryDiagnoser]
     public class ProtocolSerializerMemoryPackBenchmark
     {
-        readonly ProtocolSerializerMemoryPack serializer = new();
-        readonly ClientToServer.ClientHeartBeat message = new ClientToServer.ClientHeartBeat() { clientTimeSec = 1f };
+        readonly ProtocolSerializerMemoryPack<byte> serializer = new();
+        readonly ServerToClient.ServerHeartBeat message = new () { serverTimeSec = 1f };
         private byte[] messageBytes;
 
         public ProtocolSerializerMemoryPackBenchmark()
         {
+            serializer.RegisterServerMessageDispatch<ServerHeartBeat>( MessageTypeId.ServerHeartBeat, (x) => {});
             messageBytes = serializer.Serialize(message).ToArray();
         }
 
@@ -26,13 +29,13 @@ namespace Benchmarks
         public void ClientHeartBeatRoundtrip()
         {
             var byteStream = serializer.Serialize(message);
-            var _ = serializer.Deserialize(byteStream);
+            serializer.DeserializedDispatch(byteStream);
         }
 
         [Benchmark]
         public void ClientHeartBeatDeserialze()
         {
-            var _ = serializer.Deserialize(messageBytes);
+            serializer.DeserializedDispatch(messageBytes);
         }
     }
 
@@ -43,6 +46,10 @@ namespace Benchmarks
             var config = DefaultConfig.Instance.AddJob(
                 Job.MediumRun.WithLaunchCount(1).WithToolchain(InProcessEmitToolchain.Instance)
             );
+
+#if DEBUG
+            config.WithOptions( ConfigOptions.DisableOptimizationsValidator );
+#endif
 
             var summary = BenchmarkRunner.Run<ProtocolSerializerMemoryPackBenchmark>(config);
 

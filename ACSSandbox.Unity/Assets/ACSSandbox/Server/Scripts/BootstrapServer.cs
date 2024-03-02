@@ -36,7 +36,6 @@ namespace ACSSandbox.Server
                 Container.Register<NetworkServerRuffles>().As<INetworkServer>().SingleInstance();
             }
 
-            Container.Register<ProtocolSerializerMemoryPack>().As<IAreaServiceProtocolSerializer>();
             Container.Register<AreaService>().As<IAreaService>().SingleInstance();
         }
 

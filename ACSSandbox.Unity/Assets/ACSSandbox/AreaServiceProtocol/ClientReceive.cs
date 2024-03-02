@@ -1,5 +1,6 @@
 ﻿using System;
 using ACSSandbox.AreaServiceProtocol.ServerToClient;
+using ACSSandbox.Common.Network;
 
 namespace ACSSandbox.AreaServiceProtocol
 {
@@ -8,57 +9,24 @@ namespace ACSSandbox.AreaServiceProtocol
 
     public class ClientReceive
     {
-        private readonly IAreaServiceProtocolSerializer serializer;
-        private readonly Action<IMessage>[] dispatchers = new Action<IMessage>[byte.MaxValue];
-
-        public ClientReceive(IAreaServiceProtocolSerializer serializer)
-        {
-            this.serializer = serializer;
-        }
-
+        private readonly ProtocolSerializerMemoryPack<NetworkId> serializer = new();
+        
         public ServerHeartBeatHandler HandleServerHeartBeat
         {
-            set =>
-                dispatchers[(byte)MessageTypeId.ServerHeartBeat] = (message) =>
-                {
-                    if (message is ServerHeartBeat typeSafeMessage)
-                    {
-                        value(typeSafeMessage.serverTimeSec);
-                    }
-                };
+            set => serializer.RegisterServerMessageDispatch<ServerHeartBeat>(
+                MessageTypeId.ServerHeartBeat,
+                (x) => value(x.serverTimeSec) );
         }
         public LoginResultHandler HandleLoginResult
         {
-            set =>
-                dispatchers[(byte)MessageTypeId.LoginResult] = (message) =>
-                {
-                    if (message is LoginResult typeSafeMessage)
-                    {
-                        value(typeSafeMessage.result);
-                    }
-                };
+            set => serializer.RegisterServerMessageDispatch<LoginResult>( 
+                MessageTypeId.LoginResult,
+                (x) => value(x.result) );
         }
 
         public void HandleInboundData(ReadOnlySpan<byte> inboundData)
         {
-            var (messageTypeId, message) = serializer.Deserialize(inboundData);
-            var dispatcher = dispatchers[(byte)messageTypeId];
-
-            if (dispatcher != null)
-            {
-                dispatcher(message);
-            }
-            else
-            {
-                DiscardMessage(message);
-            }
-        }
-
-        private static void DiscardMessage(IMessage message)
-        {
-            throw new InvalidProgramException(
-                $"You received a message of type {message.GetType().Name} but there was no dispatcher registered to handle it."
-            );
+            serializer.DeserializedDispatch(inboundData);
         }
     }
 }

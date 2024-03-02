@@ -21,16 +21,15 @@ namespace ACSSandbox.Client
         private Task networkProcessingTask;
 
         public AreaServiceConnection(
-            INetworkClient networkClient,
-            IAreaServiceProtocolSerializer serializer
+            INetworkClient networkClient
         )
         {
             cancellationTokenSource = new();
 
             this.networkClient = networkClient;
 
-            Send = new ClientSend(serializer, networkClient);
-            Receive = new ClientReceive(serializer) { HandleLoginResult = HandleLoginResult };
+            Send = new ClientSend(networkClient);
+            Receive = new ClientReceive() { HandleLoginResult = HandleLoginResult };
         }
 
         public void Start(string hostname, int servicePort, string clientId)

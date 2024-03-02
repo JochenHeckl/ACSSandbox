@@ -7,9 +7,10 @@
 
   <ItemGroup>
     <Compile Include="../ACSSandbox.Unity/Assets/ACSSandbox/AreaServiceProtocol/IMessage.cs" />
-    <Compile Include="../ACSSandbox.Unity/Assets/ACSSandbox/AreaServiceProtocol/IAreaServiceProtocolSerializer.cs" />
     <Compile Include="../ACSSandbox.Unity/Assets/ACSSandbox/AreaServiceProtocol/LoginResultType.cs" />
     <Compile Include="../ACSSandbox.Unity/Assets/ACSSandbox/AreaServiceProtocol/MessageTypeId.cs" />
+    <Compile Include="../ACSSandbox.Unity/Assets/ACSSandbox/AreaServiceProtocol/IClientMessageSerializer.cs" />    
+    <Compile Include="../ACSSandbox.Unity/Assets/ACSSandbox/AreaServiceProtocol/IServerMessageSerializer.cs" />    
     <Compile Include="../ACSSandbox.Unity/Assets/ACSSandbox/AreaServiceProtocol/ProtocolSerializerMemoryPack.cs" />    
     <Compile Include="../ACSSandbox.Unity/Assets/ACSSandbox/AreaServiceProtocol/ServerToClient/*.cs" />
     <Compile Include="../ACSSandbox.Unity/Assets/ACSSandbox/AreaServiceProtocol/ClientToServer/*.cs" />
