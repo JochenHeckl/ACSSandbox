@@ -9,16 +9,11 @@ namespace ACSSandbox.AreaServiceProtocol
 
     public class ServerReceive
     {
-        private readonly IAreaServiceProtocolSerializer serializer;
+        private readonly ProtocolSerializerMemoryPack<NetworkId> serializer = new();
         private readonly Action<NetworkId, IMessage>[] dispatchers = new Action<
             NetworkId,
             IMessage
         >[byte.MaxValue];
-
-        public ServerReceive(IAreaServiceProtocolSerializer serializer)
-        {
-            this.serializer = serializer;
-        }
 
         public ClientHeartBeatHandler HandleClientHeartBeat
         {
@@ -46,17 +41,7 @@ namespace ACSSandbox.AreaServiceProtocol
 
         public void HandleInboundData(NetworkId networkId, ReadOnlySpan<byte> inboundData)
         {
-            var (messageTypeId, message) = serializer.Deserialize(inboundData);
-            var dispatcher = dispatchers[(byte)messageTypeId];
-
-            if (dispatcher != null)
-            {
-                dispatcher(networkId, message);
-            }
-            else
-            {
-                DiscardMessage(networkId, message);
-            }
+            serializer.DeserializedDispatch(networkId, inboundData);
         }
 
         private static void DiscardMessage(NetworkId networkId, IMessage message)

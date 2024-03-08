@@ -41,8 +41,6 @@ namespace ACSSandbox.Client
                 Container.Register<NetworkClientRuffles>().As<INetworkClient>();
             }
 
-            Container.Register<ProtocolSerializerMemoryPack>().As<IAreaServiceProtocolSerializer>();
-
             Container
                 .Register<AreaServiceConnection>()
                 .As<IAreaServiceConnection>()

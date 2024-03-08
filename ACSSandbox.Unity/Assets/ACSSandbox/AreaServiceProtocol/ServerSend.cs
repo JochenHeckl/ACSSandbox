@@ -5,12 +5,11 @@ namespace ACSSandbox.AreaServiceProtocol
 {
     public class ServerSend
     {
-        private readonly IAreaServiceProtocolSerializer serializer;
+        private readonly ProtocolSerializerMemoryPack<NetworkId> serializer = new();
         private readonly INetworkServer networkServer;
 
-        public ServerSend(IAreaServiceProtocolSerializer serializer, INetworkServer networkServer)
+        public ServerSend(INetworkServer networkServer)
         {
-            this.serializer = serializer;
             this.networkServer = networkServer;
         }
 

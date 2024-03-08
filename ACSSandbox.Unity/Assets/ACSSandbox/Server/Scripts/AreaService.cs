@@ -21,16 +21,15 @@ namespace ACSSandbox.Server
         private Task networkProcessingTask;
 
         public AreaService(
-            INetworkServer networkServer,
-            IAreaServiceProtocolSerializer messageSerializer
+            INetworkServer networkServer
         )
         {
             cancellationTokenSource = new();
 
             this.networkServer = networkServer;
 
-            Send = new ServerSend(messageSerializer, networkServer);
-            Receive = new ServerReceive(messageSerializer)
+            Send = new ServerSend(networkServer);
+            Receive = new ServerReceive()
             {
                 HandleClientHeartBeat = HandleHeartBeat,
                 HandleLoginRequest = HandleLoginRequest
