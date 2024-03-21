@@ -16,12 +16,12 @@ MonoBehaviour:
   - {fileID: 102900000, guid: c04af803a06a8624cba98356d1b02315, type: 3}
   assetBundleManifestPath: 
   extraScriptingDefines: []
-  outputDirectory: Build/Release/ACSSanbox/Server.exe
+  outputDirectory: Build/Release/Linux/Dedicated.Server/ACSSandbox
   buildOptions: 538968192
-  target: 41
+  target: 24
   subtarget: 1
   targetGroup: 1
-  namedBuildTarget: 30
+  namedBuildTarget: 1
   scriptingImplementation: 1
   apiCompatibilityLevel: 6
   il2CppCompilerConfiguration: 1

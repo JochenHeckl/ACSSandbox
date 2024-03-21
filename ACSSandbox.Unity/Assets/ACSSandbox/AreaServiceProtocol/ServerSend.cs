@@ -13,23 +13,19 @@ namespace ACSSandbox.AreaServiceProtocol
             this.networkServer = networkServer;
         }
 
-        public void ServerHeartBeat(float serverTimeSec)
+        public void Send<MessageType>( NetworkId destination, MessageType message, TransportChannel channel ) where MessageType : IMessage
         {
-            var messageBytes = serializer.Serialize(
-                new ServerHeartBeat()
-                {
-                    serverTimeSec = serverTimeSec
-                }
-            );
-
-            networkServer.Broadcast(messageBytes, TransportChannel.Unreliable);
+            networkServer.Send( destination, serializer.Serialize(message), channel);
         }
 
-        public void LoginResult(NetworkId networkId, LoginResultType result)
+        public void Send<MessageType>( NetworkId[] destinations, MessageType message, TransportChannel channel ) where MessageType : IMessage
         {
-            var messageBytes = serializer.Serialize(new LoginResult() { result = result });
+            networkServer.Send( destinations, serializer.Serialize(message), channel);
+        }
 
-            networkServer.Send(networkId, messageBytes, TransportChannel.ReliableInOrder);
+        public void Broadcast<MessageType>( MessageType message, TransportChannel channel ) where MessageType : IMessage
+        {
+            networkServer.Broadcast( serializer.Serialize(message), channel);
         }
     }
 }

@@ -13,20 +13,9 @@ namespace ACSSandbox.AreaServiceProtocol
             this.networkClient = networkClient;
         }
 
-        public void ClientHeartBeat(float clientTimeSec)
+        public void Send<MessageType>( MessageType message, TransportChannel channel ) where MessageType : IMessage
         {
-            var message = serializer.Serialize(
-                new ClientHeartBeat() { clientTimeSec = clientTimeSec }
-            );
-
-            networkClient.Send(message, TransportChannel.Unreliable);
-        }
-
-        public void LoginRequest(string secret)
-        {
-            var message = serializer.Serialize(new LoginRequest() { secret = secret });
-
-            networkClient.Send(message, TransportChannel.ReliableInOrder);
+            networkClient.Send( serializer.Serialize(message), channel);
         }
     }
 }

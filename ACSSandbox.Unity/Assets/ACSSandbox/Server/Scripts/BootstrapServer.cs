@@ -1,6 +1,5 @@
 using System.IO;
-using ACSSandbox.AreaServiceProtocol;
-using ACSSandbox.Common;
+using ACSSandbox.AreaServiceProtocol.ServerToClient;
 using ACSSandbox.Common.Network;
 using ACSSandbox.Common.Network.Ruffles;
 using ACSSandbox.Common.Networking.NetworkSimulator;
@@ -12,6 +11,7 @@ namespace ACSSandbox.Server
 {
     public class BootstrapServer : BootstrapBase
     {
+        public int targetFrameRate = 1;
         public int areaServicePort = 1337;
         private static string ServerConfigFilePath => "ACSSandbox.Server.json";
 
@@ -43,6 +43,8 @@ namespace ACSSandbox.Server
         {
             Log.Info("Area Server starting.");
 
+            Application.targetFrameRate = targetFrameRate;
+
             areaService = Container.Resolve<IAreaService>();
             areaService.StartService(areaServicePort);
 
@@ -57,7 +59,10 @@ namespace ACSSandbox.Server
             }
 
             nextHearBeatSec += configuration.HeartBeatIntervalSec;
-            areaService.Send.ServerHeartBeat(Time.time);
+            areaService.Send.Broadcast(
+                new ServerHeartBeat() { serverTimeSec = Time.time },
+                TransportChannel.Unreliable
+            );
         }
 
         public async void OnApplicationQuit()

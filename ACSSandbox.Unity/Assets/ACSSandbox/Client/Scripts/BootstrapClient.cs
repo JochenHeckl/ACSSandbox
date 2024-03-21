@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using ACSSandbox.AreaServiceProtocol;
+using ACSSandbox.AreaServiceProtocol.ClientToServer;
 using ACSSandbox.Client.System;
 using ACSSandbox.Common.Network;
 using ACSSandbox.Common.Network.Ruffles;
@@ -65,9 +66,12 @@ namespace ACSSandbox.Client
 
             // for simplicity reasons we will just generate a pseudo secret
             // and request a login with it. The server will always accept us.
-            
+
             var secret = Guid.NewGuid().ToString("N");
-            areaServerConnection.Send.LoginRequest(secret);
+            areaServerConnection.Send.Send(
+                new LoginRequest() { secret = secret },
+                TransportChannel.ReliableInOrder
+            );
         }
 
         public void FixedUpdate()

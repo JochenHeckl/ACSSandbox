@@ -99,9 +99,9 @@ namespace ACSSandbox.Common.Network.Ruffles
 
                     networkEvent.Recycle();
                 }
-                catch( Exception exception)
+                catch (Exception exception)
                 {
-                    Log.Error( "Error while processing network messages.", exception );
+                    Log.Error(exception, "Error while processing network messages.");
                     await Task.Yield();
                 }
             }
@@ -119,11 +119,16 @@ namespace ACSSandbox.Common.Network.Ruffles
                     networkIdToConnectionMap[newNetworkId] = networkEvent.Connection;
                     connectionToNetworkIdMap[networkEvent.Connection] = newNetworkId;
                     break;
-                
+
                 case NetworkEventType.Data:
                     messagesReceived++;
 
-                    if (connectionToNetworkIdMap.TryGetValue(networkEvent.Connection, out var networkId))
+                    if (
+                        connectionToNetworkIdMap.TryGetValue(
+                            networkEvent.Connection,
+                            out var networkId
+                        )
+                    )
                     {
                         eventProcessor.HandleInboundData(
                             networkId,
@@ -135,30 +140,37 @@ namespace ACSSandbox.Common.Network.Ruffles
                     }
                     else
                     {
-                        Log.Error("Discarding data message because of unknown connection id.", networkEvent.Type);
+                        Log.Error(
+                            "Discarding data message from {ClientId} because of unknown connection id.",
+                            networkId
+                        );
                     }
                     break;
-                
+
                 case NetworkEventType.Nothing:
                     break;
                 case NetworkEventType.Disconnect:
-                    if (connectionToNetworkIdMap.TryGetValue(networkEvent.Connection, out networkId))
+                    if (
+                        connectionToNetworkIdMap.TryGetValue(networkEvent.Connection, out networkId)
+                    )
                     {
                         networkIdToConnectionMap.Remove(networkId);
                         eventProcessor.HandleDisconnect(networkId);
                     }
                     connectionToNetworkIdMap.Remove(networkEvent.Connection);
                     break;
-                
+
                 case NetworkEventType.Timeout:
-                    if (connectionToNetworkIdMap.TryGetValue(networkEvent.Connection, out networkId))
+                    if (
+                        connectionToNetworkIdMap.TryGetValue(networkEvent.Connection, out networkId)
+                    )
                     {
                         networkIdToConnectionMap.Remove(networkId);
                         eventProcessor.HandleDisconnect(networkId);
                     }
                     connectionToNetworkIdMap.Remove(networkEvent.Connection);
                     break;
-                
+
                 case NetworkEventType.UnconnectedData:
                     break;
                 case NetworkEventType.BroadcastData:

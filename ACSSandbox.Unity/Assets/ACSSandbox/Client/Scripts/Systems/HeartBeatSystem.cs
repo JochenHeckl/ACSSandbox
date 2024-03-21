@@ -1,5 +1,8 @@
-﻿using UnityEngine;
+﻿using ACSSandbox.AreaServiceProtocol.ClientToServer;
+using ACSSandbox.AreaServiceProtocol.ServerToClient;
+using ACSSandbox.Common.Network;
 using Unity.Logging;
+using UnityEngine;
 
 namespace ACSSandbox.Client.System
 {
@@ -47,7 +50,10 @@ namespace ACSSandbox.Client.System
             }
 
             nextHeartBeatSec = Time.time + configuration.HeartBeatIntervalSec;
-            areaServiceConnection.Send.ClientHeartBeat(runtimeData.ServerTimeSec);
+            areaServiceConnection.Send.Send(
+                new ClientHeartBeat() { clientTimeSec = runtimeData.ServerTimeSec },
+                TransportChannel.Unreliable
+            );
         }
 
         public void Stop()
@@ -55,10 +61,10 @@ namespace ACSSandbox.Client.System
             isStarted = false;
         }
 
-        private void HandleServerHeartBeat(float serverTimeSec)
+        private void HandleServerHeartBeat(ServerHeartBeat message)
         {
-            Log.Debug("Client received server time {ServerTime:0.00}", serverTimeSec);
-            runtimeData.ServerTimeSec = serverTimeSec;
+            Log.Debug("Client received server time {ServerTime:0.00}", message.serverTimeSec);
+            runtimeData.ServerTimeSec = message.serverTimeSec;
         }
     }
 }

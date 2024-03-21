@@ -5,6 +5,7 @@ using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
 using ACSSandbox.AreaServiceProtocol;
+using ACSSandbox.AreaServiceProtocol.ServerToClient;
 using ACSSandbox.Common.Network;
 using Unity.Logging;
 
@@ -96,11 +97,11 @@ namespace ACSSandbox.Client
             }
         }
 
-        private void HandleLoginResult(LoginResultType result)
+        private void HandleLoginResult(LoginResult message)
         {
-            Log.Info("Login result received: {result}", result);
+            Log.Info("Login result received: {result}", message.result);
 
-            if (result == LoginResultType.AccessGranted)
+            if (message.result == LoginResultType.AccessGranted)
             {
                 ConnectionStatus = ConnectionStatus.Authenticated;
             }

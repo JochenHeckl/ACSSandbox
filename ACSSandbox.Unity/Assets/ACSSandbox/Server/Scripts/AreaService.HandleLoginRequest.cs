@@ -1,4 +1,5 @@
 ﻿using ACSSandbox.AreaServiceProtocol;
+using ACSSandbox.AreaServiceProtocol.ServerToClient;
 using ACSSandbox.Common.Network;
 using ACSSandbox.Common.Profiling;
 using Unity.Logging;
@@ -19,7 +20,9 @@ namespace ACSSandbox.Server
                 Log.Info("Accepting LoginRequest from client {ClientId}", networkId.ToString());
             }
 
-            Send.LoginResult(networkId, loginResult);
+            Send.Send(networkId, new LoginResult() {
+                result = loginResult
+            },TransportChannel.ReliableInOrder);
         }
 
         private static LoginResultType ValidateLogin(string _)

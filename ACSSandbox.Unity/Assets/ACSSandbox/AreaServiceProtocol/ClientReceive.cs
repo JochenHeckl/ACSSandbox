@@ -4,8 +4,8 @@ using ACSSandbox.Common.Network;
 
 namespace ACSSandbox.AreaServiceProtocol
 {
-    public delegate void ServerHeartBeatHandler(float serverTimeSec);
-    public delegate void LoginResultHandler(LoginResultType result);
+    public delegate void ServerHeartBeatHandler(ServerHeartBeat message);
+    public delegate void LoginResultHandler(LoginResult message);
 
     public class ClientReceive
     {
@@ -15,13 +15,13 @@ namespace ACSSandbox.AreaServiceProtocol
         {
             set => serializer.RegisterServerMessageDispatch<ServerHeartBeat>(
                 MessageTypeId.ServerHeartBeat,
-                (x) => value(x.serverTimeSec) );
+                (x) => value(x) );
         }
         public LoginResultHandler HandleLoginResult
         {
             set => serializer.RegisterServerMessageDispatch<LoginResult>( 
                 MessageTypeId.LoginResult,
-                (x) => value(x.result) );
+                (x) => value(x) );
         }
 
         public void HandleInboundData(ReadOnlySpan<byte> inboundData)
