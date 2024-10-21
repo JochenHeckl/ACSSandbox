@@ -1,27 +1,26 @@
 ﻿using System;
 using ACSSandbox.AreaServiceProtocol.ServerToClient;
 using ACSSandbox.Common.Network;
+using UnityEditor;
 
 namespace ACSSandbox.AreaServiceProtocol
 {
-    public delegate void ServerHeartBeatHandler(ServerHeartBeat message);
-    public delegate void LoginResultHandler(LoginResult message);
-
     public class ClientReceive
     {
-        private readonly ProtocolSerializerMemoryPack<NetworkId> serializer = new();
-        
-        public ServerHeartBeatHandler HandleServerHeartBeat
+        private readonly IClientMessageSerializer<NetworkId> serializer;
+
+        public ClientReceive(IClientMessageSerializer<NetworkId> serializer)
         {
-            set => serializer.RegisterServerMessageDispatch<ServerHeartBeat>(
-                MessageTypeId.ServerHeartBeat,
-                (x) => value(x) );
+            this.serializer = serializer;
         }
-        public LoginResultHandler HandleLoginResult
+
+        public void RegisterMessageHandler<Message>(
+            MessageTypeId messageTypeId,
+            Action<Message> handler
+        )
+            where Message : IMessage
         {
-            set => serializer.RegisterServerMessageDispatch<LoginResult>( 
-                MessageTypeId.LoginResult,
-                (x) => value(x) );
+            serializer.RegisterServerMessageDispatch<Message>(messageTypeId, handler);
         }
 
         public void HandleInboundData(ReadOnlySpan<byte> inboundData)

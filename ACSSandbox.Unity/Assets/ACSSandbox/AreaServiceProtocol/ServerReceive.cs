@@ -9,34 +9,20 @@ namespace ACSSandbox.AreaServiceProtocol
 
     public class ServerReceive
     {
-        private readonly ProtocolSerializerMemoryPack<NetworkId> serializer = new();
-        private readonly Action<NetworkId, IMessage>[] dispatchers = new Action<
-            NetworkId,
-            IMessage
-        >[byte.MaxValue];
+        private readonly IServerMessageSerializer<NetworkId> serializer;
 
-        public ClientHeartBeatHandler HandleClientHeartBeat
+        ServerReceive(IServerMessageSerializer<NetworkId> serializer)
         {
-            set =>
-                dispatchers[(byte)MessageTypeId.ClientHeartBeat] = (networkId, message) =>
-                {
-                    if (message is ClientHeartBeat typeSafeMessage)
-                    {
-                        value(networkId, typeSafeMessage.clientTimeSec);
-                    }
-                };
+            this.serializer = serializer;
         }
 
-        public LoginRequestHandler HandleLoginRequest
+        public void RegisterMessageHandler<Message>(
+            MessageTypeId messageTypeId,
+            Action<NetworkId, Message> handler
+        )
+            where Message : IMessage
         {
-            set =>
-                dispatchers[(byte)MessageTypeId.LoginRequest] = (networkId, message) =>
-                {
-                    if (message is LoginRequest typeSafeMessage)
-                    {
-                        value(networkId, typeSafeMessage.secret);
-                    }
-                };
+            serializer.RegisterClientMessageDispatch(messageTypeId, handler);
         }
 
         public void HandleInboundData(NetworkId networkId, ReadOnlySpan<byte> inboundData)

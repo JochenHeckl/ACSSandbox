@@ -6,6 +6,8 @@ namespace ACSSandbox.AreaServiceProtocol.ServerToClient
     public partial struct LoginResult : IMessage
     {
         public readonly MessageTypeId MessageTypeId => MessageTypeId.LoginResult;
-        public LoginResultType result;
+
+        public ValidateLoginResult result;
+        public string areaId;
     }
 }

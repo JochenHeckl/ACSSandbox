@@ -1,6 +1,6 @@
 ﻿namespace ACSSandbox.AreaServiceProtocol
 {
-    public enum LoginResultType
+    public enum ValidateLoginResult
     {
         AccessGranted,
         AccessDenied,

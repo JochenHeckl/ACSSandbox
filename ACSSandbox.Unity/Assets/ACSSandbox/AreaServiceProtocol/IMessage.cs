@@ -1,7 +1,7 @@
 ﻿namespace ACSSandbox.AreaServiceProtocol
 {
-    public interface IMessage
+    public interface IMessage<MessageIdType>
     {
-        public MessageTypeId MessageTypeId { get; }
+        public MessageIdType MessageTypeId { get; }
     }
 }

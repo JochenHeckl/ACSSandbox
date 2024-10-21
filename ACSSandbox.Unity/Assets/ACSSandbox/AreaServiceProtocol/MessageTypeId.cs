@@ -7,5 +7,8 @@
 
         LoginRequest,
         LoginResult,
+        
+        AreaDataRequest,
+        AreaData,
     }
 }
