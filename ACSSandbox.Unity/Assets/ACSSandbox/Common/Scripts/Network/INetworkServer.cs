@@ -9,11 +9,9 @@ namespace ACSSandbox.Common.Network
     {
         public IEnumerable<NetworkId> Connections { get; }
 
-        Task RunServerAsync(
-            int servicePort,
-            INetworkServerEventProcessor eventProcessor,
-            CancellationToken cancellationToken
-        );
+        void StartServer(int servicePort, INetworkServerEventProcessor eventProcessor);
+        void ProcessEvents();
+        void StopServer();
 
         void Send(NetworkId networkId, ReadOnlySpan<byte> data, TransportChannel channel);
         void Send(NetworkId[] networkIds, ReadOnlySpan<byte> data, TransportChannel channel);

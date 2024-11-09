@@ -1,7 +1,15 @@
 {
     "name": "ACSSandbox.Editor",
     "rootNamespace": "ACSSandbox.Editor",
-    "references": [],
+    "references": [
+        "ACSSandbox.Client",
+        "ACSSandbox.Common",
+        "ACSSandbox.Server",
+        "AppConfig.Unity",
+        "JH.IoCLight.Editor",
+        "JH.IoCLight",
+        "VisualElementExtensions"
+    ],
     "includePlatforms": [
         "Editor"
     ],

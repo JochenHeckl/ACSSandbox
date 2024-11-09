@@ -1,4 +1,5 @@
-﻿using ACSSandbox.AreaServiceProtocol.ClientToServer;
+﻿using ACSSandbox.AreaServiceProtocol;
+using ACSSandbox.AreaServiceProtocol.ClientToServer;
 using ACSSandbox.AreaServiceProtocol.ServerToClient;
 using ACSSandbox.Common.Network;
 using Unity.Logging;
@@ -9,57 +10,37 @@ namespace ACSSandbox.Client.System
     public class HeartBeatSystem : IClientSystem
     {
         private readonly ClientRuntimeData runtimeData;
-        private readonly ClientConfiguration configuration;
-        private readonly IAreaServiceConnection areaServiceConnection;
+        private readonly INetworkClient networkClient;
 
         private float nextHeartBeatSec;
-        private bool isStarted;
+        private ClientSend Send;
 
-        public HeartBeatSystem(
-            ClientRuntimeData runtimeData,
-            ClientConfiguration configuration,
-            IAreaServiceConnection areaServiceConnection
-        )
+        public HeartBeatSystem(ClientRuntimeData runtimeData, INetworkClient networkClient)
         {
             this.runtimeData = runtimeData;
-            this.configuration = configuration;
-            this.configuration = configuration;
-            this.areaServiceConnection = areaServiceConnection;
-
-            areaServiceConnection.Receive.HandleServerHeartBeat = HandleServerHeartBeat;
-
-            isStarted = false;
-        }
-
-        public HeartBeatSystem(bool isStarted)
-        {
-            this.isStarted = isStarted;
+            this.networkClient = networkClient;
         }
 
         public void Start()
         {
             nextHeartBeatSec = Time.time;
-            isStarted = true;
         }
 
-        public void Update()
+        public void Update() { }
+
+        public void FixedUpdate()
         {
-            if (!isStarted || (Time.time < nextHeartBeatSec))
+            if (Time.time < nextHeartBeatSec)
             {
                 return;
             }
 
-            nextHeartBeatSec = Time.time + configuration.HeartBeatIntervalSec;
-            areaServiceConnection.Send.Send(
-                new ClientHeartBeat() { clientTimeSec = runtimeData.ServerTimeSec },
-                TransportChannel.Unreliable
-            );
+            nextHeartBeatSec = Time.time + runtimeData.Configuration.clientHeartBeatIntervalSec;
+
+            Send.Unreliable(new ClientHeartBeat() { clientTimeSec = runtimeData.ServerTimeSec });
         }
 
-        public void Stop()
-        {
-            isStarted = false;
-        }
+        public void Stop() { }
 
         private void HandleServerHeartBeat(ServerHeartBeat message)
         {

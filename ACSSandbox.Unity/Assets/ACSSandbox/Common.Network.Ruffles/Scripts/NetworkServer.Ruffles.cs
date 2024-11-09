@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
 using Ruffles.Channeling;
 using Ruffles.Configuration;
 using Ruffles.Connections;
@@ -17,34 +15,61 @@ namespace ACSSandbox.Common.Network.Ruffles
         private Dictionary<NetworkId, Connection> networkIdToConnectionMap = new();
         private Dictionary<Connection, NetworkId> connectionToNetworkIdMap = new();
         private RuffleSocket server;
+        private NetworkStats networkStats = new();
+        private INetworkServerEventProcessor eventProcessor;
 
-        private uint messagesSent = 0;
-        private uint messagesReceived = 0;
-
-        public async Task RunServerAsync(
-            int servicePort,
-            INetworkServerEventProcessor eventProcessor,
-            CancellationToken cancellationToken
-        )
+        public void StartServer(int servicePort, INetworkServerEventProcessor eventProcessor)
         {
+            this.eventProcessor = eventProcessor;
+
             var serverConfig = new SocketConfig()
             {
                 ChallengeDifficulty = 20,
                 DualListenPort = servicePort,
-                ChannelTypes = new[]
-                {
-                    ChannelType.Reliable,
-                    ChannelType.Unreliable,
-                    ChannelType.ReliableOrdered,
-                },
+                ChannelTypes = NetworkSetup.ChannelTypes,
             };
 
             server = new(serverConfig);
             server.Start();
+        }
 
-            await RunServer(eventProcessor, cancellationToken);
+        public void ProcessEvents()
+        {
+            if (!server.IsInitialized)
+            {
+                return;
+            }
 
-            server.Stop();
+            try
+            {
+                while (true)
+                {
+                    var networkEvent = server.Poll();
+
+                    if (networkEvent.Type == NetworkEventType.Nothing)
+                    {
+                        break;
+                    }
+
+                    var connection = networkEvent.Connection;
+                    HandleNetworkEvent(networkEvent, eventProcessor);
+
+                    networkEvent.Recycle();
+                }
+            }
+            catch (Exception exception)
+            {
+                Log.Error(exception, "Error while processing network messages.");
+            }
+        }
+
+        public void StopServer()
+        {
+            if (server.IsInitialized)
+            {
+                server.Shutdown();
+                server = null;
+            }
         }
 
         public void Send(NetworkId networkId, ReadOnlySpan<byte> data, TransportChannel channel)
@@ -75,40 +100,6 @@ namespace ACSSandbox.Common.Network.Ruffles
             }
         }
 
-        private async Task RunServer(
-            INetworkServerEventProcessor eventProcessor,
-            CancellationToken cancellationTokenSource
-        )
-        {
-            while (!cancellationTokenSource.IsCancellationRequested)
-            {
-                try
-                {
-                    var networkEvent = server.Poll();
-
-                    if (networkEvent.Type != NetworkEventType.Nothing)
-                    {
-                        var connection = networkEvent.Connection;
-
-                        HandleNetworkEvent(networkEvent, eventProcessor);
-                    }
-                    else
-                    {
-                        await Task.Yield();
-                    }
-
-                    networkEvent.Recycle();
-                }
-                catch (Exception exception)
-                {
-                    Log.Error(exception, "Error while processing network messages.");
-                    await Task.Yield();
-                }
-            }
-
-            Log.Info("Exiting network server loop.");
-        }
-
         private void HandleNetworkEvent(
             NetworkEvent networkEvent,
             INetworkServerEventProcessor eventProcessor
@@ -123,7 +114,8 @@ namespace ACSSandbox.Common.Network.Ruffles
                     break;
 
                 case NetworkEventType.Data:
-                    messagesReceived++;
+                    networkStats.messagesReceived++;
+                    networkStats.bytesReceived += (ulong)networkEvent.Data.Count;
 
                     if (
                         connectionToNetworkIdMap.TryGetValue(
@@ -193,19 +185,20 @@ namespace ACSSandbox.Common.Network.Ruffles
             switch (channel)
             {
                 case TransportChannel.Reliable:
-                    connection.Send(data.ToArray(), 0, false, messagesSent);
+                    connection.Send(data.ToArray(), 0, false, networkStats.messagesSent);
                     break;
                 case TransportChannel.Unreliable:
-                    connection.Send(data.ToArray(), 1, false, messagesSent);
+                    connection.Send(data.ToArray(), 1, false, networkStats.messagesSent);
                     break;
                 case TransportChannel.ReliableInOrder:
-                    connection.Send(data.ToArray(), 2, false, messagesSent);
+                    connection.Send(data.ToArray(), 2, false, networkStats.messagesSent);
                     break;
                 default:
                     throw new InvalidOperationException($"unhandled channel type {channel}.");
             }
 
-            messagesSent++;
+            networkStats.messagesSent++;
+            networkStats.bytesSent += (ulong)data.Length;
         }
     }
 }

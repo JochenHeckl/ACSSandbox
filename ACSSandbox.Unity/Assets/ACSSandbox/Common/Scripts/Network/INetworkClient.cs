@@ -6,13 +6,10 @@ namespace ACSSandbox.Common.Network
 {
     public interface INetworkClient
     {
-        void Send(ReadOnlySpan<byte> data, TransportChannel channel);
+        void StartClient(string host, int servicePort, INetworkClientEventProcessor eventProcessor);
+        void ProcessEvents();
+        void StopClient();
 
-        Task RunClientAsync(
-            string host,
-            int servicePort,
-            INetworkClientEventProcessor eventProcessor,
-            CancellationToken cancellationToken
-        );
+        void Send(ReadOnlySpan<byte> data, TransportChannel channel);
     }
 }

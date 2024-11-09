@@ -1,110 +1,125 @@
-﻿using System;
-using System.Linq;
-using System.Net;
-using System.Net.Sockets;
-using System.Threading;
-using System.Threading.Tasks;
-using ACSSandbox.AreaServiceProtocol;
-using ACSSandbox.AreaServiceProtocol.ServerToClient;
-using ACSSandbox.Common.Network;
-using Unity.Logging;
+﻿// using System;
+// using System.Linq;
+// using System.Net;
+// using System.Net.Sockets;
+// using System.Threading;
+// using System.Threading.Tasks;
+// using ACSSandbox.Common.Network;
+// using Unity.Logging;
 
-namespace ACSSandbox.Client
-{
-    public class AreaServiceConnection : IAreaServiceConnection, INetworkClientEventProcessor
-    {
-        public ConnectionStatus ConnectionStatus { get; private set; }
-        public ClientSend Send { get; private set; }
-        public ClientReceive Receive { get; private set; }
+// namespace ACSSandbox.Client
+// {
+//     public class AreaServiceConnection : IAreaServiceConnection, INetworkClientEventProcessor
+//     {
+//         public delegate void ConnectionStatusChangedDelegate(
+//             AreaServiceConnectionStatus areaServiceConnectionStatus
+//         );
+//         public event ConnectionStatusChangedDelegate ConnectionStatusChanged;
 
-        private readonly INetworkClient networkClient;
-        private readonly CancellationTokenSource cancellationTokenSource;
-        private Task networkProcessingTask;
+//         public AreaServiceConnectionStatus AreaServiceConnectionStatus { get; private set; }
+//         public ClientSend Send { get; private set; }
+//         public ClientReceive Receive { get; private set; }
 
-        public AreaServiceConnection(
-            INetworkClient networkClient
-        )
-        {
-            cancellationTokenSource = new();
+//         private readonly INetworkClient networkClient;
+//         private readonly CancellationTokenSource cancellationTokenSource;
+//         private Task networkProcessingTask;
 
-            this.networkClient = networkClient;
+//         private ClientRuntimeData clientRuntimeData;
 
-            Send = new ClientSend(networkClient);
-            Receive = new ClientReceive() { HandleLoginResult = HandleLoginResult };
-        }
+//         public AreaServiceConnection(
+//             INetworkClient networkClient,
+//             IClientMessageSerializer<NetworkId> serializer,
+//             ClientRuntimeData clientRuntimeData
+//         )
+//         {
+//             cancellationTokenSource = new();
 
-        public void Start(string hostname, int servicePort, string clientId)
-        {
-            var ipv6Address = Dns.GetHostAddresses(hostname)
-                .FirstOrDefault(x => x.AddressFamily == AddressFamily.InterNetworkV6);
-            var ipAddress = Dns.GetHostAddresses(hostname)
-                .FirstOrDefault(x => x.AddressFamily == AddressFamily.InterNetwork);
+//             this.networkClient = networkClient;
 
-            var address = ipv6Address ?? ipAddress;
+//             Send = new ClientSend(networkClient, serializer);
+//             Receive = new ClientReceive();
 
-            if (address == default)
-            {
-                throw new InvalidOperationException($"hostname {hostname} can not be resolved.");
-            }
+//             this.clientRuntimeData = clientRuntimeData;
+//         }
 
-            if (networkProcessingTask != null)
-            {
-                throw new InvalidOperationException("Area Service Connection is already started.");
-            }
+//         public void Start(string hostname, int servicePort, string clientId)
+//         {
+//             var ipv6Address = Dns.GetHostAddresses(hostname)
+//                 .FirstOrDefault(x => x.AddressFamily == AddressFamily.InterNetworkV6);
+//             var ipAddress = Dns.GetHostAddresses(hostname)
+//                 .FirstOrDefault(x => x.AddressFamily == AddressFamily.InterNetwork);
 
-            networkProcessingTask = networkClient.RunClientAsync(
-                hostname,
-                servicePort,
-                this,
-                cancellationTokenSource.Token
-            );
-        }
+//             var address = ipv6Address ?? ipAddress;
 
-        public Task Stop()
-        {
-            if (networkProcessingTask == null)
-            {
-                throw new InvalidOperationException(
-                    $"network processing task is not running. Did you forget to call {nameof(Start)}()?"
-                );
-            }
+//             if (address == default)
+//             {
+//                 throw new InvalidOperationException($"hostname {hostname} can not be resolved.");
+//             }
 
-            cancellationTokenSource.Cancel();
-            return networkProcessingTask;
-        }
+//             if (networkProcessingTask != null)
+//             {
+//                 throw new InvalidOperationException("Area Service Connection is already started.");
+//             }
 
-        public void HandleConnect()
-        {
-            ConnectionStatus = ConnectionStatus.Connected;
-        }
+//             networkProcessingTask = networkClient.RunClientAsync(
+//                 hostname,
+//                 servicePort,
+//                 this,
+//                 cancellationTokenSource.Token
+//             );
+//         }
 
-        public void HandleDisconnect()
-        {
-            ConnectionStatus = ConnectionStatus.Disconnected;
-        }
+//         public Task Stop()
+//         {
+//             if (networkProcessingTask == null)
+//             {
+//                 throw new InvalidOperationException(
+//                     $"network processing task is not running. Did you forget to call {nameof(Start)}()?"
+//                 );
+//             }
 
-        public void HandleInboundData(ReadOnlySpan<byte> inboundData)
-        {
-            ConnectionStatus = ConnectionStatus.Connected;
+//             cancellationTokenSource.Cancel();
+//             return networkProcessingTask;
+//         }
 
-            try
-            {
-                Receive.HandleInboundData(inboundData);
-            }
-            catch (Exception exception)
-            {
-                Log.Error("Failed to handle inbound data. {Exception}", exception);
-            }
-        }
+//         public void HandleConnect()
+//         {
+//             AreaServiceConnectionStatus = AreaServiceConnectionStatus.Connected;
+//             ConnectionStatusChanged?.Invoke(AreaServiceConnectionStatus);
+//         }
 
-        private void HandleLoginResult(LoginResult message)
-        {
-            Log.Info("Login result received: {result}", message.result);
+//         public void HandleDisconnect()
+//         {
+//             AreaServiceConnectionStatus = AreaServiceConnectionStatus.Disconnected;
+//             ConnectionStatusChanged?.Invoke(AreaServiceConnectionStatus);
+//         }
 
-            if (message.result == LoginResultType.AccessGranted)
-            {
-                ConnectionStatus = ConnectionStatus.Authenticated;
-            }
-        }
-    }
-}
+//         public void HandleInboundData(ReadOnlySpan<byte> inboundData)
+//         {
+//             if (AreaServiceConnectionStatus == AreaServiceConnectionStatus.Disconnected)
+//             {
+//                 AreaServiceConnectionStatus = AreaServiceConnectionStatus.Connected;
+//             }
+
+//             try
+//             {
+//                 Receive.HandleInboundData(inboundData);
+//             }
+//             catch (Exception exception)
+//             {
+//                 Log.Error("Failed to handle inbound data. {Exception}", exception);
+//             }
+//         }
+
+//         private void HandleLoginResult(LoginResult message)
+//         {
+//             Log.Info("Login result received: {result}", message.result);
+
+//             if (message.result == AreaServiceProtocol.ValidateLoginResult.AccessGranted)
+//             {
+//                 AreaServiceConnectionStatus = AreaServiceConnectionStatus.Authenticated;
+//                 ConnectionStatusChanged?.Invoke(AreaServiceConnectionStatus);
+//             }
+//         }
+//     }
+// }
